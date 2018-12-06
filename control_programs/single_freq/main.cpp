@@ -19,7 +19,7 @@
 #include <boost/format.hpp>
 
 #include "../../include/global_variables.h"
-#include "hdf5.h"
+#include "/usr/include/hdf5/serial/hdf5.h"
 
 namespace po = boost::program_options;
 

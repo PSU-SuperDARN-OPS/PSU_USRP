@@ -1,0 +1,29 @@
+CM Start angle A1 = 0
+CM Stop angle A2 = 360
+CM Radial sections = 30
+CM Circular sections = 1
+CM Rotate X, Y, Z = 0, 0, 0
+CM Move X, Y, Z = 0, 0, 0
+CM 
+CM 
+CE
+SY H=9
+SY Hb=1
+SY Ls=(H-Hb)/0.866025
+SY R=800
+SY rat=2
+GW	1	29	-0.5*Ls*rat	0	Hb	0.5*Ls*rat	0	Hb	0.005
+GW	2	29	-0.5*Ls*rat	0	Hb	-0.1	0	H	0.005
+GW	3	1	-0.1	0	H	0.1	0	H	0.005
+GW	4	29	0.5*Ls*rat	0	Hb	0.1	0	H	0.005
+GE	1
+LD	5	1	1	29	58000000
+LD	5	2	1	29	58000000
+LD	5	4	1	29	58000000
+LD	5	3	1	1	58000000
+LD	0	3	1	1	R
+GN	2	0	0	0	4	0.003
+EK
+EX	0	1	15	0	1	0	0
+FR	0	16	0	0	2	2
+EN

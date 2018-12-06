@@ -1,0 +1,51 @@
+CM Start angle A1 = 0
+CM Stop angle A2 = 360
+CM Radial sections = 30
+CM Circular sections = 1
+CM Rotate X, Y, Z = 0, 0, 0
+CM Move X, Y, Z = 0, 0, 0
+CM 
+CM 
+CM forw: 0, 0 ; back: 0, 180
+CE
+SY H=12
+SY Wa=14.69197
+SY Wb=28.59875
+SY d=3
+SY l=6
+SY o=1.5
+SY R=600
+SY sep=0.25
+GW	1	14	Wb	d+l	o	sep	0	H	#14
+GW	2	15	Wa	d	o	sep	0	H	#14
+GW	3	15	Wa	-d	o	sep	0	H	#14
+GW	4	14	Wb	-d-l	o	sep	0	H	#14
+GW	5	14	-Wb	-d-l	o	-sep	0	H	#14
+GW	6	15	-Wa	-d	o	-sep	0	H	#14
+GW	7	15	-Wa	d	o	-sep	0	H	#14
+GW	8	14	-Wb	d+l	o	-sep	0	H	#14
+GW	9	3	-sep	0	H	sep	0	H	#14
+GW	10	9	Wb	d+l	o	Wa	d	o	#14
+GW	11	9	Wa	d	o	Wa	-d	o	#14
+GW	12	9	Wa	-d	o	Wb	-d-l	o	#14
+GW	13	9	-Wb	-d-l	o	-Wa	-d	o	#14
+GW	14	9	-Wa	-d	o	-Wa	d	o	#14
+GW	15	9	-Wa	d	o	-Wb	d+l	o	#14
+GW	16	3	Wb	d+l	o	Wb	d+l	0	#14
+GW	17	3	Wb	-d-l	o	Wb	-d-l	0	#14
+GW	18	3	-Wb	-d-l	o	-Wb	-d-l	0	#14
+GW	19	3	-Wb	d+l	o	-Wb	d+l	0	#14
+GE	1
+LD	0	1	1	1	R	0	0
+LD	0	4	1	1	R	0	0
+LD	0	5	1	1	R	0	0
+LD	0	8	1	1	R	0	0
+GN	2	0	0	0	4	0.003
+EK
+EX	0	9	2	0	1	0	0
+FR,0,1,0,0,2
+XQ
+FR,0,14,0,0,2,1
+PQ -1
+PT -1
+RP,0,37,73,1000,-90,0,5,5

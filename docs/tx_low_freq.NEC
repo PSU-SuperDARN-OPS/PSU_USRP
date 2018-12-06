@@ -7,9 +7,9 @@ CM Move X, Y, Z = 0, 0, 0
 CM 
 CM 
 CE
-SY H=13
-SY Wa=25
-SY Wb=20
+SY H=15
+SY Wa=17
+SY Wb=22
 SY d=3
 SY l=6
 SY o=1.5
@@ -40,7 +40,7 @@ LD	0	180	1	1	R	0	0
 LD	0	181	1	1	R	0	0
 LD	0	182	1	1	R	0	0
 LD	0	183	1	1	R	0	0
-GN	2	0	0	0	4	0.003
+GN	2	0	0	0	13	0.002
 EK
 EX	0	125	2	0	1	0	0
 FR	0	0	0	0	5	0

@@ -1,0 +1,40 @@
+clear; close;
+% Guideline range ARRL Ant 
+tau=linspace(0.7,0.98,100);
+sig_opt=0.243.*tau-0.051;
+sig = 0.03;
+cot_alpha=4*sig./(1-tau);
+f1_MHz=6;
+fn_MHz=7;
+B=fn_MHz/f1_MHz;
+B_ar=1.1+7.7*(1-tau).^2.*cot_alpha;
+B_S=B*B_ar;
+lam_max = 300 / 2;
+L_n=(1-1./B_S).*cot_alpha*lam_max/4;
+N=1+log(B_S)./log(1./tau);
+len_1=300/f1_MHz;
+subplot(3,1,1)
+plot(tau,N)
+grid on
+title('number of elements')
+subplot(3,1,2)
+plot(tau,L_n)
+grid on
+title('length of boom')
+% 4 element around tau=0.89, acceptable
+tau_chosen=0.89;
+len_2=len_1*tau_chosen;
+len_3=len_2*tau_chosen;
+len_4=len_3*tau_chosen;
+cot_alpha_single=4*sig/(1-tau_chosen);
+d2_1=(len_1-len_2)*cot_alpha_single/2;
+d3_2=d2_1*tau_chosen;
+d4_3=d3_2*tau_chosen;
+theta=linspace(45,90,100);   %slant angle in degrees
+%real boom length is Hb plus the (legnth of the lowest element)*cos(theta) plus the sum
+%of all three spacings. Hb will be added in NEC as an sweep variable
+actual_boom_length = len_1.*cosd(theta)+d2_1+d3_2+d4_3;
+subplot(3,1,3)
+plot(theta,actual_boom_length)
+grid on
+title('actual boom length')

@@ -1,0 +1,18 @@
+TX_LOW_FREQ_BOWTIE_160622 SPLIT_SOURCE.NEC wavelength=149.9 mtr.
+
+Error: Wire 1 (tag 1), seg-len ( (0.088) ) below wlen/1000 (0.15)
+Error: Wire 1, seg 1 (tag 1), seg-len (0.088) differs more than 5 * seg-len (0.768) for wire 10
+Error: Wire 2 (tag 2), seg-len ( (0.104) ) below wlen/1000 (0.15)
+Error: Wire 2, seg 261 (tag 2), seg-len (0.104) differs more than 5 * seg-len (0.768) for wire 10
+Error: Wire 3 (tag 3), seg-len ( (0.104) ) below wlen/1000 (0.15)
+Error: Wire 4 (tag 4), seg-len ( (0.088) ) below wlen/1000 (0.15)
+Error: Wire 4, seg 781 (tag 4), seg-len (0.088) differs more than 5 * seg-len (0.768) for wire 12
+Error: Wire 5 (tag 5), seg-len ( (0.088) ) below wlen/1000 (0.15)
+Error: Wire 5, seg 1041 (tag 5), seg-len (0.088) differs more than 5 * seg-len (0.768) for wire 13
+Error: Wire 6 (tag 6), seg-len ( (0.104) ) below wlen/1000 (0.15)
+Error: Wire 6, seg 1301 (tag 6), seg-len (0.104) differs more than 5 * seg-len (0.768) for wire 13
+Error: Wire 7 (tag 7), seg-len ( (0.104) ) below wlen/1000 (0.15)
+Error: Wire 8 (tag 8), seg-len ( (0.088) ) below wlen/1000 (0.15)
+Error: Wire 8, seg 1821 (tag 8), seg-len (0.088) differs more than 5 * seg-len (0.768) for wire 15
+Error: Wire 12, seg 2128 (tag 12), seg-len (0.768) differs more than 5 * seg-len (0.104) for wire 3
+Error: Wire 15, seg 2164 (tag 15), seg-len (0.768) differs more than 5 * seg-len (0.104) for wire 7

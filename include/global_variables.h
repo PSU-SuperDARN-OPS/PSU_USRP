@@ -9,7 +9,9 @@
 #define PROCESS 'p'
 
 /*Definitions of bits used for GPIO control*/
-#define TR_BIT 0x02
+#define TR_BIT 0x8000
+#define TRIG_BIT 0x4000
+#define TRTRIG_BIT 0xC00
 #define ATTEN_CTRL_LO 0x04 //Are LO and HI swapped..? FIXME
 #define ATTEN_CTRL_HI 0x08
 #define LP_FILT_CTRL_HI 0x10
@@ -34,16 +36,16 @@
 #define ATTEN_18 ATTEN_CTRL_HI | ATTEN_CTRL_LO
 
 /*General operational global variables*/
-#define MAX_VELOCITY 100 //The maximum unambiguous Doppler velocity. Low number improves computational efficiency
+#define MAX_VELOCITY 10 //The maximum unambiguous Doppler velocity. Low number improves computational efficiency
 #define OSR 1 //Factor by which each range gate is oversampled.
 #define TX_RATE 500e3 //Sample rate "over-the-wire" between host computer and USRP
 #define RX_RATE 500e3 //Sample rate "over-the-wire" between host computer and USRP
 #define SAMPLE_RATE 1000e3 //Sample rate "over-the-wire" between host computer and USRP for clear search
 #define XOVER_FREQ 30e6 //Frequency at which USRP switches from antenna port A to B
-#define MAX_CLRSEARCH_SPAN 1000
-#define MIN_CLRSEARCH_SPAN 1000
+#define MAX_CLRSEARCH_SPAN 100
+#define MIN_CLRSEARCH_SPAN 100
 
-/* Pulse codes known to both client and server */
+/*Pulse codes known to both client and server*/
 #define BARKER_13 {0.,1.,1.,1.,1.,1.,-1.,-1.,1.,1.,-1.,1.,-1.,1.,0.}
 #define GOLAY_16_0 {1.,1.,1.,-1.,1.,1.,-1.,1., 1.,1.,1.,-1.,-1.,-1.,1.,-1.};
 #define GOLAY_16_1 {1.,1.,1.,-1.,1.,1.,-1.,1., -1.,-1.,-1.,1.,1.,1.,-1.,1.};

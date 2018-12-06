@@ -25,7 +25,7 @@ def get_options():
 options = get_options()
 fstring = "ionogram." + options.date + "." + options.time + ".h5"
 #print fstring
-f = h5py.File("/home/alex/UAF_USRP/control_programs/swept_freq/"+fstring,'r')
+f = h5py.File("/home/odroid/Desktop/4UAF_USRP-master/control_programs/swept_freq/"+fstring,'r')
 #nfreqs = len(f.keys())/2;
 
 
@@ -80,25 +80,14 @@ ovelocity = np.rot90(ovelocity)
 xvelocity = np.rot90(xvelocity)
 ##image[np.where(image < 0)] = 0
 ##image[np.where(image > 20)] = 20
-plt.subplot(221)
-plt.title('O-Power (dB)')
+plt.subplot(121)
+plt.title('Power (dB)')
 plt.imshow(opower,extent=ext,aspect=asp,interpolation = "none")
 plt.colorbar()
 
-plt.subplot(222)
-plt.title('O-Velocity (m/s)')
+plt.subplot(122)
+plt.title('Velocity (m/s)')
 plt.imshow(ovelocity,extent=ext,aspect=asp,interpolation = "none")
-plt.colorbar()
-
-
-plt.subplot(223)
-plt.title('X-Power (dB)')
-plt.imshow(xpower,extent=ext,aspect=asp,interpolation = "none")
-plt.colorbar()
-    
-plt.subplot(224)
-plt.title('X-Velocity (m/s)')
-plt.imshow(xvelocity,extent=ext,aspect=asp,interpolation = "none")
 plt.colorbar()
 
 plt.show()

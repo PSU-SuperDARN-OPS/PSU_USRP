@@ -1,0 +1,895 @@
+Using Device: Single USRP:
+  Device: USRP2 / N-Series Device
+  Mboard 0: N200r4
+  RX Channel: 0
+    RX DSP: 0
+    RX Dboard: A
+    RX Subdev: LFRX (A)
+  RX Channel: 1
+    RX DSP: 1
+    RX Dboard: A
+    RX Subdev: LFRX (B)
+  TX Channel: 0
+    TX DSP: 0
+    TX Dboard: A
+    TX Subdev: LFTX (A)
+
+socket: 25
+
+Waiting for client connection..
+Listening on socket 26
+
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 2.000000 MHz...
+
+Actual RX Rate: 500.000000 Ksps...
+
+tx_ontime: 0.000372
+ptime_eff: 7.5
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 2.200000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 6.81818
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 2.400000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 6.25
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 2.600000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 5.76923
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 2.800000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 5.35714
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 3.000000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 5
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 3.200000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 4.6875
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 3.400000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 4.41176
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 3.600000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 4.16667
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 3.800000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 3.94737
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 4.000000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 3.75
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 4.200000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 3.57143
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 4.400000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 3.40909
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 4.600000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 3.26087
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 4.800000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 3.125
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 5.000000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 3
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 5.200000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 2.88462
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 5.400000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 2.77778
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 5.600000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 2.67857
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 5.800000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 2.58621
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 6.000000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 2.5
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 6.200000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 2.41935
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 6.400000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 2.34375
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 6.600000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 2.27273
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 6.800000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 2.20588
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 7.000000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 2.14286
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 7.200000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 2.08333
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 7.400000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 2.02703
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 7.600000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 1.97368
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Starting Listening.
+Starting sounding.
+dmrate: 17
+Symboltime in microseconds: 34
+Interpulse period: 6800
+Samples per pulse: 3400
+Max code length: 9
+1 1
+1 1
+1 1
+-1 -1
+1 -1
+1 -1
+-1 1
+1 -1
+Actual RX Freq: 7.800000 MHz...
+
+tx_ontime: 0.000372
+ptime_eff: 1.92308
+nave: 128
+ptime_eff: 0.8704
+slowdim: 1
+Done receiving, waiting for transmit thread..
+Done rxing 0
+symbol time in usec: 34
+fastdim: 200
+dmrate: 17
+bandwidth: 14705.9
+first inx plus filter delay: 12
+Client done
+breaking..

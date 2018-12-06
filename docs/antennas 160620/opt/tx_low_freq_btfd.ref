@@ -1,0 +1,33 @@
+CM Start angle A1 = 0
+CM Stop angle A2 = 360
+CM Radial sections = 30
+CM Circular sections = 1
+CM Rotate X, Y, Z = 0, 0, 0
+CM Move X, Y, Z = 0, 0, 0
+CM 
+CM 
+CM forw: 0, 0 ; back: 0, 0
+CE
+SY H=15
+SY Hb=0.1
+SY R=450
+SY rat=1
+SY sp=0.2
+GW	1	70	-0.1	-sp/2	H	-(H-Hb)*rat	-sp/2	Hb	#14
+GW	2	1	-(H-Hb)*rat	-sp/2	Hb	-(H-Hb)*rat	sp/2	Hb	#14
+GW	3	70	-(H-Hb)*rat	sp/2	Hb	-0.1	sp/2	H	#14
+GW	4	1	-0.1	sp/2	H	0.1	sp/2	H	#14
+GW	5	70	0.1	sp/2	H	(H-Hb)*rat	sp/2	Hb	#14
+GW	6	1	(H-Hb)*rat	sp/2	Hb	(H-Hb)*rat	-sp/2	Hb	#14
+GW	7	70	(H-Hb)*rat	-sp/2	Hb	0.1	-sp/2	H	#14
+GW	8	1	0.1	-sp/2	H	-0.1	-sp/2	H	#14
+GE	1
+LD	5	0	0	0	58000000
+LD	0	4	1	1	R
+GN	2	0	0	0	13	0.002
+EK
+EX	0	8	1	0	1	0	0
+FR,0,1,0,0,3.61
+PQ -1
+PT -1
+RP,0,37,1,1000,-90,0,5

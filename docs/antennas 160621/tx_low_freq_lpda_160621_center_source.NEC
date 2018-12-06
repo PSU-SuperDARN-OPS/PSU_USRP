@@ -1,0 +1,42 @@
+CM Start angle A1 = 0
+CM Stop angle A2 = 360
+CM Radial sections = 30
+CM Circular sections = 1
+CM Rotate X, Y, Z = 0, 0, 0
+CM Move X, Y, Z = 0, 0, 0
+CM 
+CM 
+CE
+SY H=15
+SY c=0.139173
+SY sintheta=0.990268
+SY len_1=50.0000
+SY len_2=44.5000
+SY len_3=39.6050
+SY len_4=35.2485
+SY d2_1=3.0000
+SY d3_2=2.6700
+SY d4_3=2.3763
+SY sp=0.1
+GW	1	200	sp	0	H	len_4*sintheta	0	H-len_4*c	#14
+GW	2	200	sp	0	H-d4_3	len_3*sintheta	0	H-len_4*c-d4_3	#14
+GW	3	200	sp	0	H-d4_3-d3_2	len_2*sintheta	0	H-len_4*c-d4_3-d3_2	#14
+GW	4	200	sp	0	H-d4_3-d3_2-d2_1	len_1*sintheta	0	H-len_4*c-d4_3-d3_2-d2_1	#14
+GW	5	200	-sp	0	H	-len_4*sintheta	0	H-len_4*c	#14
+GW	6	200	-sp	0	H-d4_3	-len_3*sintheta	0	H-len_4*c-d4_3	#14
+GW	7	200	-sp	0	H-d4_3-d3_2	-len_2*sintheta	0	H-len_4*c-d4_3-d3_2	#14
+GW	8	200	-sp	0	H-d4_3-d3_2-d2_1	-len_1*sintheta	0	H-len_4*c-d4_3-d3_2-d2_1	#14
+GW	9	1	-sp	0	H	sp	0	H	#14
+GW	10	1	-sp	0	H-d4_3	sp	0	H-d4_3	#14
+GW	11	1	-sp	0	H-d4_3-d3_2	sp	0	H-d4_3-d3_2	#14
+GW	12	1	-sp	0	H-d4_3-d3_2-d2_1	sp	0	H-d4_3-d3_2-d2_1	#14
+GE	1
+GN	2	0	0	0	13	0.002
+EK
+EX	0	9	1	0	1	0	0
+TL	9	1	10	1	-423.4289	0	0	0	0	0
+TL	10	1	11	1	-423.4289	0	0	0	0	0
+TL	11	1	12	1	-423.4289	0	0	0	0	0
+TL	12	1	12	1	-423.4289	0.01	0	0	1e+99	1e+99
+FR	0	0	0	0	5	0
+EN

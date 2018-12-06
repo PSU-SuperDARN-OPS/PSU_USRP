@@ -70,7 +70,7 @@ int doppler_process(
         for (int j=first_range_inx; j<fastdim; j++)
             DC += doppler_grid[i][j];
         DC /= (fastdim-first_range_inx);
-        //printf("slowdim %i, DC: %.1f, %.1f\n", i, std::abs(DC), 180/M_PI*std::arg(DC));
+        printf("slowdim %i, DC: %.1f, %.1f\n", i, std::abs(DC), 180/M_PI*std::arg(DC));
         for (int j=0; j<fastdim; j++)
              doppler_grid[i][j] -= DC;
     }
@@ -82,7 +82,7 @@ int doppler_process(
             if (std::abs(doppler_grid[i][irange]) >
                 std::abs(doppler_grid[maxinx][irange]))
                     maxinx = i;
-            //printf("Mininx: %i / %i\n", maxinx, slowdim);
+            printf("Mininx: %i / %i\n", maxinx, slowdim);
         }
         outpow[irange] = 
             std::abs(doppler_grid[maxinx][irange]*

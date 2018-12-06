@@ -1,0 +1,6 @@
+tx_low_freq.NEC wavelength=59.96 mtr.
+
+Error: Wire 4, seg 88 (tag 119), seg-len (1.262) differs more than 5 * seg-len (0.067) for wire 9
+Error: Wire 8, seg 176 (tag 123), seg-len (1.262) differs more than 5 * seg-len (0.067) for wire 9
+Error: Wire 9, seg 177 (tag 125), seg-len (0.067) differs more than 5 * seg-len (1.271) for wire 5
+Error: Wire 9, seg 179 (tag 125), seg-len (0.067) differs more than 5 * seg-len (1.271) for wire 1

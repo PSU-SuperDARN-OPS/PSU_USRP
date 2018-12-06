@@ -19,12 +19,12 @@
 #include <boost/format.hpp>
 
 #include "../../include/global_variables.h"
-#include "hdf5.h"
+#include <hdf5/serial/hdf5.h>
 
 namespace po = boost::program_options;
 
 int main(int argc, char *argv[]){
-    int verbose =0;
+    int verbose =1;
     /* Socket and status variables*/
     int sockfd=0, n=0;
     int rval =0, status=0;
@@ -135,10 +135,14 @@ int main(int argc, char *argv[]){
     nominal_freq = start_freq;
     for (ifreq=0; ifreq<nsteps; ifreq++){
         /* Get the spectrum and then select the quietest frequency*/
+        if (verbose) std::cout << "start_freq is " << start_freq << std::endl;
+        if (verbose) std::cout << "stop_freq is " << stop_freq << std::endl;
+        if (verbose) std::cout << "step_freq is " << step_freq << std::endl;
         if (verbose) std::cout << "Grabbing spectrum\n";
         usrpmsg = LISTEN;
         send(sockfd, &usrpmsg, sizeof(usrpmsg), 0);
         size_t search_range = (int) step_freq / 2;
+        if (verbose) std::cout << "search_range is " << search_range << std::endl;
         if (search_range%2 !=0) search_range-=1;
         if (search_range < MIN_CLRSEARCH_SPAN) search_range=MIN_CLRSEARCH_SPAN;
         if (search_range > MAX_CLRSEARCH_SPAN) search_range=MAX_CLRSEARCH_SPAN;
@@ -152,7 +156,10 @@ int main(int argc, char *argv[]){
         for (int i=1; i<spectrum.size(); i++){
             if (spectrum[i] < spectrum[min_inx]) min_inx = i;
         }
-        parms.freq_khz = min_inx + spect_parms.start_freq_khz;
+        //Below line commented to temporarily disable clear search
+        //parms.freq_khz = min_inx + spect_parms.start_freq_khz;
+        parms.freq_khz = nominal_freq;
+        
         frequencies.push_back(parms.freq_khz);
         rval = recv(sockfd, &status, sizeof(int),0);
 

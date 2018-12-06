@@ -5,7 +5,6 @@
 // Alex Morris
 // 06 Dec 2013
 #include <sys/socket.h>
-
 #include <uhd/utils/thread_priority.hpp>
 #include <uhd/utils/safe_main.hpp>
 #include <uhd/utils/static.hpp>
@@ -44,11 +43,13 @@ typedef std::complex<int16_t>  sc16;
 static bool stop_signal_called = false;
 void sig_int_handler(int){stop_signal_called = true;}
 
-int verbose = 0;
+int verbose = 1;
 int debug = 0;
 
 void choose_pcode(std::vector<float>* pcode0, std::vector<float>* pcode1, size_t max_code_length){
-    if (max_code_length < 4){
+
+
+  if (max_code_length < 4){
         *pcode0=RECT;
         *pcode1=RECT;
     }
@@ -68,6 +69,8 @@ void choose_pcode(std::vector<float>* pcode0, std::vector<float>* pcode1, size_t
         *pcode0=GOLAY_16_0;
         *pcode1=GOLAY_16_1;
     }
+
+
 }
 
 void set_frontend_parms(int freq, uhd::usrp::multi_usrp::sptr usrp){
@@ -126,6 +129,13 @@ void set_frontend_parms(int freq, uhd::usrp::multi_usrp::sptr usrp){
  * Main function
  **********************************************************************/
 int UHD_SAFE_MAIN(int argc, char *argv[]){
+
+    std::ofstream myfile;
+    myfile.open ("example.txt");
+
+    std::ofstream perfile;
+    perfile.open ("periodogram.txt");
+
     uhd::set_thread_priority_safe();
 
     int return_status = 0;
@@ -136,7 +146,10 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
 
     std::vector<float> pcode0;
     std::vector<float> pcode1;
+    std::vector<float> fake_pcode0;
+    std::vector<float> fake_pcode1;
     float* pcode_ptrs[2];
+    float* fake_pcode_ptrs[2];
 
     //status flags
     int new_seq_flag = 1;
@@ -225,38 +238,47 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
     uhd::rx_streamer::sptr rx_stream = 
     	usrp->get_rx_stream(rx_stream_args);
 
-    if (verbose) std::cout << boost::format("Using Device: %s") % usrp->get_pp_string() << std::endl;
+    if (verbose) myfile << boost::format("Using Device: %s") % usrp->get_pp_string() << std::endl;
     
     //USRP is initialized;
     //now execute the tx/rx operations per arguments passed by the tcp socket
     sock = tcpsocket(HOST_PORT);
-    if (verbose) printf("socket: %i\n",sock);
+    //printf("socket: %i\n",sock);
+    if (verbose) myfile << boost::format("socket: %i\n") % sock << std::endl;
     while(true){
         listen(sock,1);
         //rval = 1;
         if (verbose>-1) printf("Waiting for client connection..\n");
+        if (verbose>-1) myfile << boost::format("Waiting for client connection..") << std::endl;
         msgsock = accept(sock, 0, 0);
         if (verbose) printf("Listening on socket %i\n", msgsock);
+        if (verbose) myfile << boost::format("Listening on socket %i\n") % msgsock << std::endl;
         //std::vector<std::string> banks;
         while(true){
             rval = recv_data(msgsock, &usrpmsg, sizeof(usrpmsg));
             if (verbose) if (rval <= 0) std::cout << "breaking..\n";
+            if (verbose) if (rval <= 0) myfile << boost::format("breaking..")<<std::endl;
+            if (rval <= 0) myfile.close();
+            if (rval <= 0) perfile.close();
             if (rval <= 0) break;
             switch (usrpmsg){
                 case EXIT:
                     if (verbose>-1) printf("Client done\n");
+		    if (verbose>-1) myfile << boost::format("Client done")<<std::endl;
                     break;
                 case LISTEN:
-                    if (verbose > -1) printf("Starting Listening.\n");
+                    if (verbose>-1) printf("Starting Listening.\n");
+                    if (verbose>-1) myfile << boost::format("Starting Listening.")<<std::endl;
+                    if (verbose>-1) perfile << boost::format("Starting Listening.")<<std::endl;
                     rval = recv_data(msgsock, &lparms, sizeof(lparms));
                     center_freq_khz = (lparms.end_freq_khz + lparms.start_freq_khz) / 2;
                     span_khz = lparms.end_freq_khz - lparms.start_freq_khz;
                     if (verbose){
-                        std::cout << "start freq: " << lparms.start_freq_khz << std::endl;
-                        std::cout << "end freq: " << lparms.end_freq_khz << std::endl;
-                        std::cout << "bandwidth: " << lparms.bandwidth_khz << std::endl;
-                        std::cout << "center_freq_khz: " << center_freq_khz << std::endl;
-                        std::cout << "span_khz: " << span_khz << std::endl;
+                        perfile << boost::format("start freq: ") << lparms.start_freq_khz << std::endl;
+                        perfile << boost::format("end freq: ") << lparms.end_freq_khz << std::endl;
+                        perfile << boost::format("bandwidth: ") << lparms.bandwidth_khz << std::endl;
+                        perfile << boost::format("center_freq_khz: ") << center_freq_khz << std::endl;
+                        perfile << boost::format("span_khz: ") << span_khz << std::endl;
                     }
                     periodogram.resize(span_khz);
                     capture_spectrum(
@@ -267,13 +289,26 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                         lparms.bandwidth_khz,
                         &periodogram.front());
 
+                    if (verbose>-1){
+                      for (int k=0; k<span_khz; k++){
+                        perfile << k << "\t";
+                        perfile << periodogram[k] << std::endl;
+                      }
+
+                    }
+ 
                     send(msgsock, &periodogram.front(), periodogram.size()*sizeof(float),0);
                     return_status=0;
                     send(msgsock, &return_status, sizeof(return_status),0);
                     break;
 
                 case SEND:
-                    if (verbose > -1) printf("Starting sounding.\n");
+
+                    // 170525 GLB trying to determine why needs server reset
+                    //usrp->set_time_now(uhd::time_spec_t(0.0));
+
+                    if (verbose > -1) std::cout << "Starting sounding.\n";
+                    if (verbose > -1) myfile << boost::format("Starting sounding.")<<std::endl;
 
                     rval = recv_data(msgsock, &parms, sizeof(parms));
 
@@ -281,6 +316,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
 
                     symboltime_usec = parms.range_res_km / 1.5e-1;
                     dmrate = (size_t) ceil(symboltime_usec * RX_RATE / (osr*1e6));
+                    if (verbose) myfile << boost::format("dmrate: ")<<dmrate<<std::endl;
                     //if (dmrate%osr == 1) dmrate-=1;
                     //while (dmrate%osr != 0) dmrate -= 1;
                     symboltime_usec = osr*1e6*dmrate/RX_RATE;
@@ -288,14 +324,20 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                     ipp_usec = (size_t) ceil(2*parms.last_range_km / 3.0e-1 / symboltime_usec / 100);
                     ipp_usec *= 100;
                     ipp_usec *= symboltime_usec;
+                    if (verbose) myfile << boost::format("Symboltime in microseconds: ")<<symboltime_usec<<std::endl;
+                    if (verbose) myfile << boost::format("Interpulse period: ")<<ipp_usec<<std::endl;
 
                     nsamps_per_pulse = (unsigned int) (ipp_usec*RX_RATE/1e6);
+                    if (verbose) myfile << boost::format("Samples per pulse: ")<<nsamps_per_pulse<<std::endl;
                     
                     max_code_length = (size_t) floor(2*parms.first_range_km / 3.0e-1 / symboltime_usec);
+                    if (verbose) myfile << boost::format("Max code length: ")<<max_code_length<<std::endl;
                     choose_pcode(&pcode0, &pcode1, max_code_length);
 
+                    //ipp_usec /= 2;
+
                     for (int i=0; i<pcode0.size(); i++){
-                        if (verbose) std::cout << pcode0[i] << " " << pcode1[i] << std::endl;
+                        if (verbose) myfile << pcode0[i] << " " << pcode1[i] << std::endl;
                     }
                             
 	            freq = 1e3*parms.freq_khz;
@@ -318,12 +360,15 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                     usrp->set_tx_rate(TX_RATE);
 	                
                     if (verbose) std::cout << boost::format("Actual RX Freq: %f MHz...") % (usrp->get_rx_freq()/1e6) << "\n" << std::endl;
+                    if (verbose) myfile << boost::format("Actual RX Freq: %f MHz...") % (usrp->get_rx_freq()/1e6) << "\n" << std::endl;
 
 	                if (new_seq_flag == 1){
 	                	usrp->set_tx_rate(TX_RATE);
 	                	if (verbose) std::cout << boost::format("Actual TX Rate: %f Ksps...") % (usrp->get_tx_rate()/1e3) << std::endl << std::endl;
+                        if (verbose) std::cout << boost::format("Actual TX Rate: %f Ksps...") % (usrp->get_tx_rate()/1e3) << std::endl << std::endl;
 	                	usrp->set_rx_rate(RX_RATE);
 	                	if (verbose) std::cout << boost::format("Actual RX Rate: %f Ksps...") % (usrp->get_rx_rate()/1e3) << std::endl << std::endl;
+                        if (verbose) myfile << boost::format("Actual RX Rate: %f Ksps...") % (usrp->get_rx_rate()/1e3) << std::endl << std::endl;
 	                }
 	                new_seq_flag = 0;
 
@@ -357,7 +402,10 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                     //prepare raw tx information
                     pcode_ptrs[0] = &pcode0.front();
                     pcode_ptrs[1] = &pcode1.front();
-
+                    fake_pcode0 = pcode0;
+                    fake_pcode1 = pcode1;
+                    fake_pcode_ptrs[0] = &fake_pcode0.front();
+                    fake_pcode_ptrs[1] = &fake_pcode1.front();
 
                     bufflen = pcode0.size()* samps_per_sym;
                     tx_raw_buff0.clear();
@@ -392,6 +440,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                     //tx_ontime = (float) tx_filt_buff0.size() / (1.e3*parms.txrate_khz) + 100e-6;
                     tx_ontime = (float) tx_filt_buff0.size() / (TX_RATE) + 100e-6;
                     if (debug) std::cout << "tx_ontime: " << tx_ontime << std::endl;
+                    if (verbose) myfile << "tx_ontime: " << tx_ontime << std::endl;
                     //tx_ontime_usec = tx_filt_buff0.size() / TX_RATE / 1000 + 50;
                     tx_filt_buff0.resize((ipp_usec * TX_RATE/1e6), 0);
                     tx_filt_buff1.resize((ipp_usec * TX_RATE/1e6), 0);
@@ -403,6 +452,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                     //prepare rx information
                     ptime_eff = 3e8 / (2*MAX_VELOCITY*freq);
                     if (verbose) printf("ptime_eff: %f\n", ptime_eff);
+                    if (verbose) myfile << "ptime_eff: "<<ptime_eff<<std::endl;
                     nave = 2;
                     ptime_eff /= 2;
                     while(ptime_eff > 1.e-6*ipp_usec && parms.num_pulses/nave > 1){
@@ -410,17 +460,30 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                         ptime_eff /= 2;
                     }
                     if (verbose) printf("nave: %i\n", nave);
+                    if (verbose) myfile << "nave: "<<nave<<std::endl;
                     ptime_eff = nave*1e-6*ipp_usec;
                     if (verbose) printf("ptime_eff: %f usec\n", ptime_eff);
+                    if (verbose) myfile << "ptime_eff: "<<ptime_eff<<std::endl;
 
                     slowdim = parms.num_pulses/nave;
                     if (verbose) printf("slowdim: %i\n", slowdim);
+                    if (verbose) myfile << "slowdim: "<<slowdim<<std::endl;
+
+
 
                     rawvecs.resize(usrp->get_rx_num_channels());
                     rawvec_ptrs.resize(usrp->get_rx_num_channels());
+ 
+// 170525 GLB trying to figure out why have to restart server for consistent results between soundings
+//usrp->set_time_now(uhd::time_spec_t(100.0));
+
+for (size_t tloop=1;tloop<31;tloop++){
+
+if(verbose) printf("\n tloop: %i\n",tloop);
+
                     for (size_t i=0; i<rawvecs.size(); i++){
-                        rawvecs[i].resize(nsamps_per_pulse*parms.num_pulses);
-                        rawvec_ptrs[i] = &rawvecs[i].front();
+                        rawvecs[i].resize(nsamps_per_pulse*parms.num_pulses*tloop);
+                        rawvec_ptrs[i] = (tloop - 1)*(nsamps_per_pulse*parms.num_pulses) + &rawvecs[i].front();
                     }
 
                     transceive(
@@ -435,9 +498,12 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                         &rawvec_ptrs.front(),
                         nsamps_per_pulse
                         );
+}
+slowdim *= 30;
 
 
 	                if (verbose) std::cout << "Done receiving, waiting for transmit thread.." << std::endl;
+                    if (verbose) myfile << "Done receiving, waiting for transmit thread.." << std::endl;
                     transmit_thread.join_all();
 
 	                if (return_status){
@@ -449,6 +515,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                     parms.range_res_km = 1.5e-1*symboltime_usec;
                     fastdim = nsamps_per_pulse/dmrate;
                     if (verbose) std::cout << "Done rxing 0\n";
+                    if (verbose) myfile << "Done rxing 0\n";
                     memset(&actual_parms,0,sizeof(actual_parms));
                     actual_parms.freq_khz = freq/1e3;
                     actual_parms.num_pulses = parms.num_pulses;
@@ -466,10 +533,15 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                     //dmrate = parms.symboltime_usec * parms.rxrate_khz / (osr*1000);
                     //dmrate = (size_t) (1.e-6*symboltime_usec * RX_RATE / osr);
                     bandwidth = 1/(2.e-6*symboltime_usec);
-	    	        if (verbose) printf("symbol time: %i usec\n", symboltime_usec);
+	    	    if (verbose) printf("symbol time: %i usec\n", symboltime_usec);
                     if (verbose) printf("fastdim: %i\n",fastdim);
                     if (verbose) printf("dmrate: %i\n", dmrate);
                     if (verbose) printf("bandwidth: %f\n", bandwidth);
+
+                if (verbose) myfile << "symbol time in usec: " << symboltime_usec << std::endl;
+                    if (verbose) myfile << "fastdim: " << fastdim << std::endl;
+                    if (verbose) myfile << "dmrate: " << dmrate << std::endl;
+                    if (verbose) myfile << "bandwidth: " << bandwidth << std::endl;
 
                     outvecs[0][0].resize(slowdim);
                     outvecs[0][1].resize(slowdim);
@@ -502,14 +574,10 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                                 if (j%2 == 0){
                                     outvecs[0][0][i][k] += 
                                         std::complex<int16_t>(1,0) * 
-                                        (rawvecs[0][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k] + 
-                                            std::complex<int16_t>(0,1) * 
-                                            rawvecs[1][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k]);
+                                        (rawvecs[0][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k]);
                                     outvecs[1][0][i][k] += 
                                         std::complex<int16_t>(1,0) * 
-                                        (rawvecs[0][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k] - 
-                                            std::complex<int16_t>(0,1) * 
-                                            rawvecs[1][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k]);
+                                        (rawvecs[1][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k]);
                                     //std::cout << j << " " <<
                                     //    std::complex<int16_t>(1,0) * 
                                     //    (rawvecs[0][i*nave*parms.nsamps_per_pulse+j*parms.nsamps_per_pulse+k] + 
@@ -520,14 +588,10 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                                 if (j%2 == 1){
                                     outvecs[0][1][i][k] += 
                                         std::complex<int16_t>(1,0) * 
-                                        (rawvecs[0][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k] + 
-                                            std::complex<int16_t>(0,1) * 
-                                            rawvecs[1][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k]);
+                                        (rawvecs[0][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k]);
                                     outvecs[1][1][i][k] += 
                                         std::complex<int16_t>(1,0) * 
-                                        (rawvecs[0][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k] - 
-                                            std::complex<int16_t>(0,1) * 
-                                            rawvecs[1][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k]);
+                                        (rawvecs[1][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k]);
                                     //std::cout <<  j << " " << 
                                     //    std::complex<int16_t>(1,0) * 
                                     //    (rawvecs[0][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k] + 
@@ -536,17 +600,17 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                                     //        << std::endl;
                                 }
                             }
-                            if (debug){
+                        /*    if (verbose){
                                 //if (j == nave-1 || j == nave-2) {
                                     for (int k=0; k<nsamps_per_pulse; k++){
-                                        std::cout << j << " " << k << " ";
-                                        std::cout << outvecs[0][0][i][k] << "\t";
-                                        std::cout << outvecs[0][1][i][k] << "\t";
-                                        std::cout << outvecs[1][0][i][k] << "\t";
-                                        std::cout << outvecs[1][1][i][k] << std::endl;
+                                        myfile << j << " " << k << " ";
+                                        myfile << outvecs[0][0][i][k] << "\t";
+                                        myfile << outvecs[0][1][i][k] << "\t";
+                                        myfile << outvecs[1][0][i][k] << "\t";
+                                        myfile << outvecs[1][1][i][k] << std::endl;
                                     }
                                 //}
-                            }
+                            } */
                         }
                     }
 
@@ -618,7 +682,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                         rval = matched_filter(
                             filtvec_dptr[mode],
                             ffvec_ptrs[mode],
-                            pcode_ptrs,
+                            fake_pcode_ptrs,
                             pcode0.size(),
                             slowdim,
                             nsamps_per_pulse/dmrate,
@@ -629,6 +693,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                     filter_delay = osr*pcode0.size() / 2;
                     if (verbose){
                         std::cout << "first inx plus filter delay: " << first_inx + filter_delay << std::endl;
+			myfile << "first inx plus filter delay: " << first_inx + filter_delay << std::endl;
                     }
 
                     fpow[0].resize(nsamps_per_pulse/dmrate,0);

@@ -1,0 +1,4 @@
+tx_low_freq_btfd_3wire.NEC wavelength=149.9 mtr.
+
+Error: Wires 2 (tag 2) and 9 (tag 9) are crossing or not connected.
+Error: Wires 6 (tag 6) and 11 (tag 11) are crossing or not connected.
