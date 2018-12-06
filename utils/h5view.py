@@ -25,7 +25,7 @@ def get_options():
 options = get_options()
 fstring = "ionogram." + options.date + "." + options.time + ".h5"
 #print fstring
-f = h5py.File("/home/odroid/Desktop/4UAF_USRP-master/control_programs/swept_freq/"+fstring,'r')
+f = h5py.File("/home/odroid/Desktop/UAF_USRP/control_programs/swept_freq/"+fstring,'r')
 #nfreqs = len(f.keys())/2;
 
 
