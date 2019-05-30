@@ -223,53 +223,60 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
     //create a transmit streamer
     uhd::stream_args_t tx_stream_args("sc16", "sc16");
     usrp->set_tx_subdev_spec(tx_subdev);
-    uhd::tx_streamer::sptr tx_stream = 
-    	usrp->get_tx_stream(tx_stream_args);
+    uhd::tx_streamer::sptr tx_stream = usrp->get_tx_stream(tx_stream_args);
     
     usrp->set_rx_subdev_spec(rx_subdev);
 
     //create a receive streamer
     if (verbose) std::cout << "number of channels: " << usrp->get_rx_num_channels() << std::endl;
+
     uhd::stream_args_t rx_stream_args("sc16", "sc16");
     for (size_t rx_chan = 0; rx_chan < usrp->get_rx_num_channels(); rx_chan++){
         rx_stream_args.channels.push_back(rx_chan); //linear mapping
     }
 
-    uhd::rx_streamer::sptr rx_stream = 
-    	usrp->get_rx_stream(rx_stream_args);
+    uhd::rx_streamer::sptr rx_stream = usrp->get_rx_stream(rx_stream_args);
 
     if (verbose) myfile << boost::format("Using Device: %s") % usrp->get_pp_string() << std::endl;
     
     //USRP is initialized;
     //now execute the tx/rx operations per arguments passed by the tcp socket
     sock = tcpsocket(HOST_PORT);
-    //printf("socket: %i\n",sock);
+
     if (verbose) myfile << boost::format("socket: %i\n") % sock << std::endl;
+
     while(true){
         listen(sock,1);
-        //rval = 1;
+
         if (verbose>-1) printf("Waiting for client connection..\n");
         if (verbose>-1) myfile << boost::format("Waiting for client connection..") << std::endl;
+
         msgsock = accept(sock, 0, 0);
+
         if (verbose) printf("Listening on socket %i\n", msgsock);
         if (verbose) myfile << boost::format("Listening on socket %i\n") % msgsock << std::endl;
-        //std::vector<std::string> banks;
+
         while(true){
             rval = recv_data(msgsock, &usrpmsg, sizeof(usrpmsg));
+
             if (verbose) if (rval <= 0) std::cout << "breaking..\n";
             if (verbose) if (rval <= 0) myfile << boost::format("breaking..")<<std::endl;
+
             if (rval <= 0) myfile.close();
             if (rval <= 0) perfile.close();
             if (rval <= 0) break;
+
             switch (usrpmsg){
                 case EXIT:
                     if (verbose>-1) printf("Client done\n");
-		    if (verbose>-1) myfile << boost::format("Client done")<<std::endl;
+		            if (verbose>-1) myfile << boost::format("Client done")<<std::endl;
+
                     break;
                 case LISTEN:
                     if (verbose>-1) printf("Starting Listening.\n");
                     if (verbose>-1) myfile << boost::format("Starting Listening.")<<std::endl;
                     if (verbose>-1) perfile << boost::format("Starting Listening.")<<std::endl;
+
                     rval = recv_data(msgsock, &lparms, sizeof(lparms));
                     center_freq_khz = (lparms.end_freq_khz + lparms.start_freq_khz) / 2;
                     span_khz = lparms.end_freq_khz - lparms.start_freq_khz;
@@ -317,39 +324,33 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                     symboltime_usec = parms.range_res_km / 1.5e-1;
                     dmrate = (size_t) ceil(symboltime_usec * RX_RATE / (osr*1e6));
                     if (verbose) myfile << boost::format("dmrate: ")<<dmrate<<std::endl;
-                    //if (dmrate%osr == 1) dmrate-=1;
-                    //while (dmrate%osr != 0) dmrate -= 1;
+
                     symboltime_usec = osr*1e6*dmrate/RX_RATE;
 
                     ipp_usec = (size_t) ceil(2*parms.last_range_km / 3.0e-1 / symboltime_usec / 100);
                     ipp_usec *= 100;
                     ipp_usec *= symboltime_usec;
+
                     if (verbose) myfile << boost::format("Symboltime in microseconds: ")<<symboltime_usec<<std::endl;
                     if (verbose) myfile << boost::format("Interpulse period: ")<<ipp_usec<<std::endl;
 
                     nsamps_per_pulse = (unsigned int) (ipp_usec*RX_RATE/1e6);
+
                     if (verbose) myfile << boost::format("Samples per pulse: ")<<nsamps_per_pulse<<std::endl;
                     
                     max_code_length = (size_t) floor(2*parms.first_range_km / 3.0e-1 / symboltime_usec);
+
                     if (verbose) myfile << boost::format("Max code length: ")<<max_code_length<<std::endl;
+
                     choose_pcode(&pcode0, &pcode1, max_code_length);
 
-                    //ipp_usec /= 2;
 
                     for (int i=0; i<pcode0.size(); i++){
                         if (verbose) myfile << pcode0[i] << " " << pcode1[i] << std::endl;
                     }
                             
-	            freq = 1e3*parms.freq_khz;
+	                freq = 1e3*parms.freq_khz;
                     set_frontend_parms(freq, usrp);
-                    //if (freq < XOVER_FREQ){
-                    //    if (verbose) std::cout << "Using antenna A\n";
-                    //    usrp->set_tx_subdev_spec(std::string("A:A"));
-                    //}
-                    //else {
-                    //    if (verbose) std::cout << "Using antenna B\n";
-                    //    usrp->set_tx_subdev_spec(std::string("A:B"));
-                    //}
 
 	                //configure the USRP according to the arguments from the client
                     for (size_t i=0; i<usrp->get_rx_num_channels(); i++){
@@ -372,12 +373,9 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
 	                }
 	                new_seq_flag = 0;
 
-
                     stop_signal_called = false;
 
                     //Prepare lp filter taps for filtering the tx samples
-                    //samps_per_sym = (unsigned int) (parms.symboltime * parms.txrate);
-                    //samps_per_sym = parms.symboltime_usec * parms.txrate_khz / 1000;
                     samps_per_sym = symboltime_usec * TX_RATE / 1e6;
                     ntaps = 4*samps_per_sym;
                     filter_taps.resize(ntaps,0);
@@ -385,13 +383,10 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                     txsamprate = usrp->get_tx_rate();
                     for (int i=0; i<ntaps; i++){
                         double x=2*(2*M_PI*((float)i/ntaps)-M_PI);
-                        filter_taps[i] = std::complex<float>(
-                            //txbw*(0.54-0.46*cos((2*M_PI*((float)(i)+0.5))/ntaps))*sin(x)/(x)/txsamprate,
-                            //0);
-                            1*(0.54-0.46*cos((2*M_PI*((float)(i)+0.5))/ntaps))*sin(x)/(x),
-                            0);
+                        filter_taps[i] = std::complex<float>(1 * (0.54 - 0.46
+                                * cos((2 * M_PI * ((float)(i) + 0.5)) / ntaps)) * sin(x) / (x), 0);
                     }
-                    filter_taps[ntaps/2] = std::complex<float>(1,0);
+                    filter_taps[ntaps/2] = std::complex<float>(1, 0);
 
                     if (debug){
                         for (int i=0; i<ntaps; i++){
@@ -413,14 +408,11 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                     tx_raw_buff0.resize(bufflen+ntaps,0);
                     tx_raw_buff1.resize(bufflen+ntaps,0);
                     for (size_t isym=0; isym<pcode0.size(); isym++){
-                        tx_raw_buff0[isym*samps_per_sym+ntaps/2 + samps_per_sym/2] = std::complex<float>(
+                        tx_raw_buff0[isym * samps_per_sym + ntaps/2 + samps_per_sym/2] = std::complex<float>(
                             pcode0[isym]*15000, 0x0000);
                         tx_raw_buff1[isym*samps_per_sym+ntaps/2 + samps_per_sym/2] = std::complex<float>(
                             pcode1[isym]*15000, 0x0000);
                     }
-                    //for (int i=0; i<tx_raw_buff0.size(); i++){
-                    //    printf("tx_raw_buff %i: %f, %f\n", i, tx_raw_buff0[i].real(), tx_raw_buff0[i].imag());
-                    //}
 
                     //filter the raw tx vector
                     tx_filt_buff0.resize(bufflen,0);
@@ -434,16 +426,16 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                         }
                         tx_filt_buff0[i] = std::complex<int16_t>((int16_t)temp0.real(), (int16_t)temp0.imag());
                         tx_filt_buff1[i] = std::complex<int16_t>((int16_t)temp1.real(), (int16_t)temp1.imag());
-                        //printf("tx_filt_buff %i: %i, %i\n", i, tx_filt_buff0[i].real(), tx_filt_buff0[i].imag());
                     }
 
-                    //tx_ontime = (float) tx_filt_buff0.size() / (1.e3*parms.txrate_khz) + 100e-6;
                     tx_ontime = (float) tx_filt_buff0.size() / (TX_RATE) + 100e-6;
+
                     if (debug) std::cout << "tx_ontime: " << tx_ontime << std::endl;
                     if (verbose) myfile << "tx_ontime: " << tx_ontime << std::endl;
-                    //tx_ontime_usec = tx_filt_buff0.size() / TX_RATE / 1000 + 50;
+
                     tx_filt_buff0.resize((ipp_usec * TX_RATE/1e6), 0);
                     tx_filt_buff1.resize((ipp_usec * TX_RATE/1e6), 0);
+
                     if (verbose) std::cout << "ipp_usec: " << ipp_usec << std::endl;
                     if (verbose) std::cout << "TX_RATE: " << TX_RATE << std::endl;
                     if (verbose) std::cout << "tx_filt_buffx size: " << ipp_usec * TX_RATE << std::endl;
@@ -451,21 +443,27 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
 
                     //prepare rx information
                     ptime_eff = 3e8 / (2*MAX_VELOCITY*freq);
+
                     if (verbose) printf("ptime_eff: %f\n", ptime_eff);
                     if (verbose) myfile << "ptime_eff: "<<ptime_eff<<std::endl;
+
                     nave = 2;
                     ptime_eff /= 2;
                     while(ptime_eff > 1.e-6*ipp_usec && parms.num_pulses/nave > 1){
                         nave *= 2;
                         ptime_eff /= 2;
                     }
+
                     if (verbose) printf("nave: %i\n", nave);
                     if (verbose) myfile << "nave: "<<nave<<std::endl;
+
                     ptime_eff = nave*1e-6*ipp_usec;
+
                     if (verbose) printf("ptime_eff: %f usec\n", ptime_eff);
                     if (verbose) myfile << "ptime_eff: "<<ptime_eff<<std::endl;
 
                     slowdim = parms.num_pulses/nave;
+
                     if (verbose) printf("slowdim: %i\n", slowdim);
                     if (verbose) myfile << "slowdim: "<<slowdim<<std::endl;
 
@@ -474,48 +472,50 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                     rawvecs.resize(usrp->get_rx_num_channels());
                     rawvec_ptrs.resize(usrp->get_rx_num_channels());
  
-// 170525 GLB trying to figure out why have to restart server for consistent results between soundings
-//usrp->set_time_now(uhd::time_spec_t(100.0));
+                    // 170525 GLB trying to figure out why have to restart server for consistent results between soundings
+                    //usrp->set_time_now(uhd::time_spec_t(100.0));
 
-for (size_t tloop=1;tloop<31;tloop++){
+                    for (size_t tloop=1;tloop<31;tloop++){
 
-if(verbose) printf("\n tloop: %i\n",tloop);
+                        if(verbose) printf("\n tloop: %i\n",tloop);
 
-                    for (size_t i=0; i<rawvecs.size(); i++){
-                        rawvecs[i].resize(nsamps_per_pulse*parms.num_pulses*tloop);
-                        rawvec_ptrs[i] = (tloop - 1)*(nsamps_per_pulse*parms.num_pulses) + &rawvecs[i].front();
+                        for (size_t i=0; i<rawvecs.size(); i++){
+                            rawvecs[i].resize(nsamps_per_pulse*parms.num_pulses*tloop);
+                            rawvec_ptrs[i] = (tloop - 1)*(nsamps_per_pulse*parms.num_pulses) + &rawvecs[i].front();
+                        }
+
+                        transceive(
+                            usrp,
+                            tx_stream,
+                            rx_stream,
+                            parms.num_pulses,
+                            1.e-6*ipp_usec,
+                            &tx_filt_buff0,
+                            &tx_filt_buff1,
+                            tx_ontime,
+                            &rawvec_ptrs.front(),
+                            nsamps_per_pulse
+                            );
                     }
-
-                    transceive(
-                        usrp,
-                        tx_stream,
-                        rx_stream,
-                        parms.num_pulses,
-                        1.e-6*ipp_usec,
-                        &tx_filt_buff0,
-                        &tx_filt_buff1,
-                        tx_ontime,
-                        &rawvec_ptrs.front(),
-                        nsamps_per_pulse
-                        );
-}
-slowdim *= 30;
+                    slowdim *= 30;
 
 
 	                if (verbose) std::cout << "Done receiving, waiting for transmit thread.." << std::endl;
                     if (verbose) myfile << "Done receiving, waiting for transmit thread.." << std::endl;
+
                     transmit_thread.join_all();
 
 	                if (return_status){
                         std::cerr << "This is a bad record..\n";
                         //Do something..?
                     }
-                    //parms.first_range_km = first_range_km;
-                    //parms.last_range_km = last_range_km;
+
                     parms.range_res_km = 1.5e-1*symboltime_usec;
                     fastdim = nsamps_per_pulse/dmrate;
+
                     if (verbose) std::cout << "Done rxing 0\n";
                     if (verbose) myfile << "Done rxing 0\n";
+
                     memset(&actual_parms,0,sizeof(actual_parms));
                     actual_parms.freq_khz = freq/1e3;
                     actual_parms.num_pulses = parms.num_pulses;
@@ -533,12 +533,12 @@ slowdim *= 30;
                     //dmrate = parms.symboltime_usec * parms.rxrate_khz / (osr*1000);
                     //dmrate = (size_t) (1.e-6*symboltime_usec * RX_RATE / osr);
                     bandwidth = 1/(2.e-6*symboltime_usec);
-	    	    if (verbose) printf("symbol time: %i usec\n", symboltime_usec);
+	    	        if (verbose) printf("symbol time: %i usec\n", symboltime_usec);
                     if (verbose) printf("fastdim: %i\n",fastdim);
                     if (verbose) printf("dmrate: %i\n", dmrate);
                     if (verbose) printf("bandwidth: %f\n", bandwidth);
 
-                if (verbose) myfile << "symbol time in usec: " << symboltime_usec << std::endl;
+                    if (verbose) myfile << "symbol time in usec: " << symboltime_usec << std::endl;
                     if (verbose) myfile << "fastdim: " << fastdim << std::endl;
                     if (verbose) myfile << "dmrate: " << dmrate << std::endl;
                     if (verbose) myfile << "bandwidth: " << bandwidth << std::endl;
@@ -565,9 +565,7 @@ slowdim *= 30;
                         outvec_ptrs[1][0][i] = &outvecs[1][0][i].front();
                         outvec_ptrs[1][1][i] = &outvecs[1][1][i].front();
                     }
-                    //for (int i=0; i<rawvecs[1].size(); i++){
-                    //    std::cout << i << " " << rawvecs[1][i] << std::endl;
-                    //}
+
                     for (int i=0; i<slowdim; i++){
                         for (int j=0; j<nave; j++){
                             for (int k=0; k<nsamps_per_pulse; k++){
@@ -578,12 +576,7 @@ slowdim *= 30;
                                     outvecs[1][0][i][k] += 
                                         std::complex<int16_t>(1,0) * 
                                         (rawvecs[1][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k]);
-                                    //std::cout << j << " " <<
-                                    //    std::complex<int16_t>(1,0) * 
-                                    //    (rawvecs[0][i*nave*parms.nsamps_per_pulse+j*parms.nsamps_per_pulse+k] + 
-                                    //        std::complex<int16_t>(0,-1) * 
-                                    //        rawvecs[1][i*nave*parms.nsamps_per_pulse+j*parms.nsamps_per_pulse+k])
-                                    //        << std::endl;
+
                                 }
                                 if (j%2 == 1){
                                     outvecs[0][1][i][k] += 
@@ -592,25 +585,10 @@ slowdim *= 30;
                                     outvecs[1][1][i][k] += 
                                         std::complex<int16_t>(1,0) * 
                                         (rawvecs[1][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k]);
-                                    //std::cout <<  j << " " << 
-                                    //    std::complex<int16_t>(1,0) * 
-                                    //    (rawvecs[0][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k] + 
-                                    //        std::complex<int16_t>(0,-1) * 
-                                    //        rawvecs[1][i*nave*nsamps_per_pulse+j*nsamps_per_pulse+k])
-                                    //        << std::endl;
+
                                 }
                             }
-                        /*    if (verbose){
-                                //if (j == nave-1 || j == nave-2) {
-                                    for (int k=0; k<nsamps_per_pulse; k++){
-                                        myfile << j << " " << k << " ";
-                                        myfile << outvecs[0][0][i][k] << "\t";
-                                        myfile << outvecs[0][1][i][k] << "\t";
-                                        myfile << outvecs[1][0][i][k] << "\t";
-                                        myfile << outvecs[1][1][i][k] << std::endl;
-                                    }
-                                //}
-                            } */
+
                         }
                     }
 
@@ -634,14 +612,6 @@ slowdim *= 30;
                         filtvec_ptrs[1][1][i] = &filtvecs[1][1][i].front();
                     }
 
-                    //send(msgsock, &return_status, sizeof(return_status),0);
-                    //break;
-
-                    //printf("slowdim: %i\n",slowdim);
-                    //printf("nsamps_per_pulse: %i\n",nsamps_per_pulse);
-                    //printf("RX_RATE: %f\n",RX_RATE);
-                    //printf("bandwidth: %f\n",bandwidth);
-                    //printf("dmrate: %i\n",dmrate);
                     for (int mode=0; mode<2; mode++){
                         for (int pcode=0; pcode<2; pcode++){
                             rval = lp_filter(
@@ -659,13 +629,7 @@ slowdim *= 30;
                     filtvec_dptr[1][0] = &filtvec_ptrs[1][0].front();
                     filtvec_dptr[1][1] = &filtvec_ptrs[1][1].front();
 
-                    //for (int a=0; a<2; a++){
-                    //    for (int i=0; i<slowdim; i++){
-                    //        for (int j=0; j<nsamps_per_pulse/dmrate; j++){
-                    //            std::cout << a << " " << j << " " << filtvec_dptr[a][i][j] << std::endl;
-                    //        }
-                    //    }
-                    //}
+
                     ffvec_ptrs[0].resize(slowdim);
                     ffvec_ptrs[1].resize(slowdim);
                     ffvecs[0].resize(slowdim);
@@ -693,7 +657,7 @@ slowdim *= 30;
                     filter_delay = osr*pcode0.size() / 2;
                     if (verbose){
                         std::cout << "first inx plus filter delay: " << first_inx + filter_delay << std::endl;
-			myfile << "first inx plus filter delay: " << first_inx + filter_delay << std::endl;
+			            myfile << "first inx plus filter delay: " << first_inx + filter_delay << std::endl;
                     }
 
                     fpow[0].resize(nsamps_per_pulse/dmrate,0);
@@ -712,37 +676,27 @@ slowdim *= 30;
                     }
                     send(msgsock, &return_status, sizeof(return_status),0);
                     for (int i=0; i<nsamps_per_pulse/dmrate; i++){
-                        //fpow[0][i] /= (float(npulses*npulses)*std::pow(2,30)*std::pow(50,2))/16;
-                        //fpow[1][i] /= (float(npulses*npulses)*std::pow(2,30)*std::pow(50,2))/16;
+
                         fpow[0][i] = 10*log10(fpow[0][i]);
                         fpow[1][i] = 10*log10(fpow[1][i]);
                         fvel[0][i] = 3e5*fvel[0][i] / ( 8.*ptime_eff * slowdim * parms.freq_khz);
                         fvel[1][i] = 3e5*fvel[1][i] / ( 8.*ptime_eff * slowdim * parms.freq_khz);
-                        //printf("%i: %f\n",i,fvel[0][i]);
-                        //printf("%i: %.1f @ %.1f\n",i,30+10*log10(fpow[i]),fvel[i]);
-                        //printf("%i: %e @ %.1f\n",i,fpow[i],fvel[i]);
-                        //filtvec_ptrs[0][i] /= ((float)nave*std::pow(2,15));
-                        //ffvec_ptrs[0][i] /= ((float)nave*std::pow(2,15));
-                        //outvec_ptrs[0][i] /= ((float)nave*std::pow(2,15))/4;
-                        //printf("%i: %e @ %.1f\n",i,std::abs(filtvec_ptrs[0][i]),fvel[i]);
-                        //printf("%i: %e @ %.1f\n",i,std::abs(ffvec_ptrs[0][i]),fvel[i]);
-                        //printf("%i: %.3f @ %.1f\n",i,std::abs(outvec_ptrs[0][i]),fvel[i]);
                     }
                     break;
 
                 case GET_DATA:
                     if (verbose > -1) std::cout << "Starting get_data\n";
                     nranges = fastdim - filter_delay;
-                    //std::cout << "fastdim: " << fastdim << std::endl;
+
                     send(msgsock, &nranges, sizeof(nranges),0);
 
                     first_range_km = (pcode0.size() * 1.e-6*symboltime_usec) * 1.5e5;
                     first_range_km = 0;
-                    //std::cout << "first_range: " << first_range << std::endl;
+
                     send(msgsock, &first_range_km, sizeof(first_range_km),0);
 
                     last_range_km = (1.e-6*ipp_usec-pcode0.size()*1.e-6*symboltime_usec) * 1.5e5;
-                    //std::cout << "last_range: " << last_range << std::endl;
+
                     send(msgsock, &last_range_km, sizeof(last_range_km),0);
                     send(msgsock, 
                         &fpow[0].front()+filter_delay,
