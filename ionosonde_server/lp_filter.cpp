@@ -19,60 +19,105 @@ extern int verbose;
  * lp_filter function
  **********************************************************************/
 int lp_filter(
-    std::vector<std::complex<float> *> indata,
-    std::vector<std::complex<float> *> outdata,
-    int slowdim,
-    int fastdim,
-    float samprate,
-    float bw,
-    int decimrate
+        std::vector<std::complex < float> *
+
+> indata,
+std::vector<std::complex < float> *> outdata,
+int slowdim,
+int fastdim,
+float samprate,
+float bw,
+int decimrate
 ){
-    int debug = 0;
+int debug = 0;
 
-    //Create a vector of filter taps for low-pass filtering.  
-    //This is a simple hamming-windowed sinc function
-    float ntaps = 4*samprate/bw;
-    std::vector<std::complex<float> > filter_taps(ntaps);
-    for (int i=0;i<ntaps;i++){
-        double x=4*(2*M_PI*((float)i/ntaps)-M_PI);
-        filter_taps[i] = std::complex<float>(
-            bw/samprate*(0.54+0.46*cos((2*M_PI*((float)(i-ntaps/2)+0.5))/ntaps))*sin(x)/x,
-            0);
-    }
-    filter_taps[ntaps/2] = std::complex<float>(bw/samprate,0);
+//Create a vector of filter taps for low-pass filtering.
+//This is a simple hamming-windowed sinc function
+float ntaps = 4 * samprate / bw;
+std::vector <std::complex<float>> filter_taps(ntaps);
+for (
+int i = 0;
+i<ntaps;
+i++){
+double x = 4 * (2 * M_PI * ((float) i / ntaps) - M_PI);
+filter_taps[i] =
+std::complex<float>(
+        bw
+/samprate*(0.54+0.46*cos((2*M_PI*((float)(i-ntaps/2)+0.5))/ntaps))*
+sin(x)
+/x,
+0);
+}
+filter_taps[ntaps/2] =
+std::complex<float>(bw
+/samprate, 0);
 
-    if(debug){
-        for (int i=0; i<ntaps; i++){
-            printf("%i: (%.4f,%.4f)\n", i, filter_taps[i].real(), filter_taps[i].imag());
-        }
-    }
+if (debug){
+for (
+int i = 0;
+i<ntaps;
+i++){
+printf("%i: (%.4f,%.4f)\n", i, filter_taps[i].
 
-    //populate the zero-padded temporary vector with input samples
-    //This copies the input samples to a new memory location.  For greater efficiency, the samples
-    //should be placed in the center of a "large" zero-valued array right off the bat.
-    for (int ipulse=0;ipulse<slowdim; ipulse++){
-        std::complex<float> DC(0,0);
-        std::vector<std::complex<float> > tempvec(fastdim+ntaps,0);
-        for (int i=0; i<fastdim; i++){
-            tempvec[ntaps/2+i] = indata[ipulse][i];
-        }
-        //Print the zero-padded vector of input samples
-        if (debug){
-            for (int i=0; i<(fastdim+ntaps); i++){
-                printf("in: %i (%.2f, %.2f)\n", i, tempvec[i].real(), tempvec[i].imag());
-            }
-        }
-        //perform the convolution
-        std::complex<float> temp(0,0);
-        for (int isamp =0; isamp<fastdim; isamp+=decimrate){
-            temp = std::complex<float>(0,0);
-            for (int i=0; i<ntaps; i++){
-                temp += filter_taps[i]*tempvec[isamp+i];
-            }
-            outdata[ipulse][isamp/decimrate] = temp;
-        }
-    }
-    return 0;
+real(), filter_taps[i]
+
+.
+
+imag()
+
+);
+}
+}
+
+//populate the zero-padded temporary vector with input samples
+//This copies the input samples to a new memory location.  For greater efficiency, the samples
+//should be placed in the center of a "large" zero-valued array right off the bat.
+for (
+int ipulse = 0;
+ipulse<slowdim;
+ipulse++){
+std::complex<float> DC(0, 0);
+std::vector <std::complex<float>> tempvec(fastdim + ntaps, 0);
+for (
+int i = 0;
+i<fastdim;
+i++){
+tempvec[ntaps/2+i] = indata[ipulse][i];
+}
+//Print the zero-padded vector of input samples
+if (debug){
+for (
+int i = 0;
+i<(fastdim+ntaps); i++){
+printf("in: %i (%.2f, %.2f)\n", i, tempvec[i].
+
+real(), tempvec[i]
+
+.
+
+imag()
+
+);
+}
+}
+//perform the convolution
+std::complex<float> temp(0, 0);
+for (
+int isamp = 0;
+isamp<fastdim;
+isamp+=decimrate){
+temp = std::complex<float>(0, 0);
+for (
+int i = 0;
+i<ntaps;
+i++){
+temp += filter_taps[i]*tempvec[isamp+i];
+}
+outdata[ipulse][isamp/decimrate] =
+temp;
+}
+}
+return 0;
 }
 
 //int main(){
