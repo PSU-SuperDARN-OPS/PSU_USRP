@@ -2,7 +2,7 @@ OS:=$(shell uname -s)
 
 CCpp=g++
 CFLAGS=-g
-LFLAGS=-L"/usr/lib/arm-linux-gnueabihf/hdf5/serial"
+LFLAGS=-L"/usr/lib/x86_64-linux-gnu/hdf5/serial"
 libs=-lboost_program_options -lhdf5
 SOURCES=main.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
