@@ -9,6 +9,8 @@
 #define PROCESS 'p'
 
 /*Definitions of bits used for GPIO control*/
+#define T_BIT 0x8000
+#define R_BIT 0x0100
 #define TR_BIT 0x8000
 #define TRIG_BIT 0x4000
 #define TRTRIG_BIT 0xC00
