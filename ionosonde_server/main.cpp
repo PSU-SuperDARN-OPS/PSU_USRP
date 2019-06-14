@@ -28,11 +28,11 @@
 #include <unistd.h>
 #include <fftw3.h>
 
-#include <sounder.hpp>
+#include "sounder.hpp"
 
 //#include "c_utils.h"
 #include "utils.hpp"
-#include "../include/global_variables.h"
+#include "global_variables.h"
 
 namespace po = boost::program_options;
 typedef std::complex <int16_t> sc16;

@@ -42,6 +42,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fftw3.h>
 
 namespace po = boost::program_options;
 typedef std::complex <int16_t> sc16;
@@ -109,7 +110,7 @@ void recv_clr_freq(
     int num_total_samps = 0;
     int nave = 10;
     int nsamps = nave * (int) bandwidth;
-    fftw_complex in = NULL, out = NULL;
+    fftw_complex in {NULL,NULL}, out = {NULL,NULL};
     fftw_plan plan;
 
 
@@ -143,17 +144,20 @@ void recv_clr_freq(
         num_total_samps += num_rx_samps;
 
         if (in != NULL) {
-            free(in);
-            in = NULL;
+            fftw_free(in);
+            in[0] = NULL;
+            in[1] = NULL;
         }
-        in = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * bandwidth);
+        in = fftw_malloc(sizeof(fftw_complex) * bandwidth);
         if (out != NULL) {
-            free(out);
-            out = NULL;
+            fftw_free(out);
+            out[0] = NULL;
+            out[1] = NULL;
         }
         out = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * bandwidth);
 
         plan = fftw_plan_dft_1d(bandwidth, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+
 
         for (int i = 0; i < bandwidth; i++) {
             //in[i][0] = (hann_window[i]*rx_short_vecs[0][i].real());

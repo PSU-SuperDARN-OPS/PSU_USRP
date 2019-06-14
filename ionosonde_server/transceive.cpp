@@ -26,7 +26,7 @@
 #include <stdlib.h>
 
 #include <thread>
-#include "../include/global_variables.h"
+#include "global_variables.h"
 
 typedef std::complex<int16_t>  sc16;
 extern int verbose;

@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import h5py
 from optparse import OptionParser
 import glob
+import os
 
 def get_options():
     usage="%prog: [options]"
@@ -22,10 +23,14 @@ def get_options():
 
     return options
 
+# Debug file directory structure/location
+dirs = os.getcwd()
+print dirs
+
 options = get_options()
 fstring = "ionogram." + options.date + "." + options.time + ".h5"
 #print fstring
-f = h5py.File("/home/odroid/Desktop/UAF_USRP/control_programs/swept_freq/"+fstring,'r')
+f = h5py.File("/home/bgklug/Software/UAF_USRP/control_programs/swept_freq/"+fstring,'r')
 #nfreqs = len(f.keys())/2;
 
 
@@ -80,6 +85,7 @@ ovelocity = np.rot90(ovelocity)
 xvelocity = np.rot90(xvelocity)
 ##image[np.where(image < 0)] = 0
 ##image[np.where(image > 20)] = 20
+
 plt.subplot(121)
 plt.title('Power (dB)')
 plt.imshow(opower,extent=ext,aspect=asp,interpolation = "none")

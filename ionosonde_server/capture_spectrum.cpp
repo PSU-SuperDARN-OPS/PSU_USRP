@@ -21,7 +21,7 @@
 #include <unistd.h>
 #include <fftw3.h>
 
-#include "../include/global_variables.h"
+#include "global_variables.h"
 
 
 typedef std::complex <int16_t> sc16;
