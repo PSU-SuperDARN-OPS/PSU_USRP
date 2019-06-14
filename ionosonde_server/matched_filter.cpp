@@ -57,25 +57,25 @@ int matched_filter(
             if (debug){
                 for (int i = 0;i<fastdim+ntaps;i++){
                     printf("in: %i (%.2f, %.2f)\n", i, tempvec[i].real(), tempvec[i].imag());
+                }
             }
-        }
 
-        //perform the convolution
-        for (int isamp = 0;isamp<fastdim;isamp++){
-            std::complex<float> temp(0, 0);
-            for (int i = 0;i<ntaps;i++){
-                temp += filter_taps[icode][i]*tempvec[isamp+i];
-            }
-            outdata[ipulse][isamp] += temp;
-            //if (icode==1) printf("out %i,%i: %.2f\n",ipulse,isamp,20*log10(std::abs(outdata[ipulse][isamp])));
-            //printf("temp %i,%i: %.2f\n",ipulse,isamp,10*log10(std::abs(temp)));
-            if (debug){
-            printf("temp %i,%i: %.2f @ %.0f\n", ipulse, isamp,std::abs(temp),180*std::arg(temp)/M_PI);
-            }
-            //printf("out %i,%i: %.2f\n",ipulse,isamp,std::abs(outdata[ipulse][isamp]));
-            //printf("out %i,%i: (%.1f, %.1f)\n",ipulse,isamp,outdata[ipulse][isamp].real(),
-            //    outdata[ipulse][isamp].imag());
-            //printf("temp %i,%i: (%.1f, %.1f)\n",ipulse,isamp,temp.real(),temp.imag());
+            //perform the convolution
+            for (int isamp = 0;isamp<fastdim;isamp++){
+                std::complex<float> temp(0, 0);
+                for (int i = 0;i<ntaps;i++){
+                    temp += filter_taps[icode][i]*tempvec[isamp+i];
+                }
+                outdata[ipulse][isamp] += temp;
+                //if (icode==1) printf("out %i,%i: %.2f\n",ipulse,isamp,20*log10(std::abs(outdata[ipulse][isamp])));
+                //printf("temp %i,%i: %.2f\n",ipulse,isamp,10*log10(std::abs(temp)));
+                if (debug){
+                printf("temp %i,%i: %.2f @ %.0f\n", ipulse, isamp,std::abs(temp),180*std::arg(temp)/M_PI);
+                }
+                //printf("out %i,%i: %.2f\n",ipulse,isamp,std::abs(outdata[ipulse][isamp]));
+                //printf("out %i,%i: (%.1f, %.1f)\n",ipulse,isamp,outdata[ipulse][isamp].real(),
+                //    outdata[ipulse][isamp].imag());
+                //printf("temp %i,%i: (%.1f, %.1f)\n",ipulse,isamp,temp.real(),temp.imag());
             }
         }
     }
