@@ -7,7 +7,9 @@ find_package(FFTW)
 
 find_package(Boost "1.46" REQUIRED
         program_options
-        thread)
+        thread
+        system
+        signals)
 
 find_package(UHD "3.9.7")
 
@@ -23,8 +25,17 @@ add_executable(ionosonde_server
         matched_filter.cpp
         transceive.cpp
         utils.cpp utils.hpp
-        sounder.cpp sounder.hpp
+         sounder.hpp
         global_variables.h
         )
+target_include_directories(ionosonde_server PRIVATE
+        ${Boost_INCLUDE_DIRS}
+        ${UHD_INCLUDE_DIRS})
 
-target_link_libraries(ionosonde_server fftw3)
+target_link_directories(ionosonde_server PRIVATE
+        ${Boost_LIBRARY_DIRS})
+
+target_link_libraries(ionosonde_server
+        fftw3 m
+        ${Boost_LIBRARIES}
+        ${UHD_LIBRARIES})
