@@ -110,7 +110,8 @@ void recv_clr_freq(
     int num_total_samps = 0;
     int nave = 10;
     int nsamps = nave * (int) bandwidth;
-    fftw_complex in {NULL,NULL}, out = {NULL,NULL};
+    fftw_complex * in;
+    fftw_complex * out;
     fftw_plan plan;
 
 
@@ -145,14 +146,14 @@ void recv_clr_freq(
 
         if (in != NULL) {
             fftw_free(in);
-            in[0] = NULL;
-            in[1] = NULL;
+            in = NULL;
+//            in[1] = NULL;
         }
-        in = fftw_malloc(sizeof(fftw_complex) * bandwidth);
+        in = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * bandwidth);
         if (out != NULL) {
             fftw_free(out);
-            out[0] = NULL;
-            out[1] = NULL;
+            out = NULL;
+//            out[1] = NULL;
         }
         out = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * bandwidth);
 
