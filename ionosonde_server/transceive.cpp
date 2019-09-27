@@ -63,18 +63,15 @@ void transceive(
     int debug = 0;
     int fverb = 1;
 
-    if (debug) {
-        std::cout << "samps_per_pulse: " << samps_per_pulse << std::endl;
-    }
-
+    BOOST_LOG_TRIVIAL(debug) << "samps_per_pulse: " << samps_per_pulse;
 
     //create metadeta tags for transmit streams
-    if (verbose) std::cout << "time spec debug woah doggy" << std::endl;
+    BOOST_LOG_TRIVIAL(info) << "time spec debug woah doggy";
     //usrp->set_clock_source("internal");
     //usrp->set_time_now(uhd::time_spec_t(0.0));
-    if (verbose) std::cout << "time spec debug woah doggy doggy" << std::endl;
+    BOOST_LOG_TRIVIAL(info) << "time spec debug woah doggy doggy";
     uhd::time_spec_t start_time = usrp->get_time_now() + 0.05;
-    if (verbose) std::cout << "time spec debug woah" << std::endl;
+    BOOST_LOG_TRIVIAL(info) << "time spec debug woah";
     uhd::tx_metadata_t md;
     md.start_of_burst = true;
     md.end_of_burst = false;
@@ -90,8 +87,8 @@ void transceive(
     //create metadata tags for receive stream
     uhd::rx_metadata_t rxmd;
     std::vector<std::complex<int16_t> > buff(samps_per_pulse, 0);
-    if (verbose) std::cout << "rx buff size: " << buff.size() << std::endl;
-    if (verbose) std::cout << "tx buff size: " << txbuff0->size() << std::endl;
+    BOOST_LOG_TRIVIAL(info) << "rx buff size: " << buff.size();
+    BOOST_LOG_TRIVIAL(info) << "tx buff size: " << txbuff0->size();
     uhd::stream_cmd_t stream_cmd = uhd::stream_cmd_t::STREAM_MODE_NUM_SAMPS_AND_DONE;
     stream_cmd.num_samps = npulses * samps_per_pulse;
     stream_cmd.stream_now = false;
@@ -103,12 +100,12 @@ void transceive(
     std::vector<std::complex<int16_t> *> rx_dptr;
     rx_dptr.resize(usrp->get_rx_num_channels());
     spb = tx_stream->get_max_num_samps();
-    if (verbose) std::cout << "npulses: " << npulses << std::endl;
-    if (fverb) std::cout << "pulse_time: " << pulse_time << std::endl;
+    BOOST_LOG_TRIVIAL(info) << "npulses: " << npulses;
+    BOOST_LOG_TRIVIAL(info) << "pulse_time: " << pulse_time;
     boost::thread_group rx_threads;
     boost::thread_group tx_threads;
     for (int ipulse = 0; ipulse < npulses; ipulse++) {
-        if (debug) std::cout << "pulse number: " << ipulse << std::endl;
+        BOOST_LOG_TRIVIAL(debug) << "pulse number: " << ipulse <<;
         std::cout << "A" << std::endl;
         for (size_t ichan = 0; ichan < usrp->get_rx_num_channels(); ichan++) {
             rx_dptr[ichan] = ipulse * samps_per_pulse + outdata[ichan];
@@ -120,10 +117,9 @@ void transceive(
         usrp->set_gpio_attr("RXA", "OUT", T_BIT, 0x8100);
 
         if (ipulse == 0) {
-            if (fverb) std::cout << "time spec: " << stream_cmd.time_spec.get_real_secs() << std::endl;
-            if (fverb) std::cout << "Issuing stream command to start collecting samples\n";
+            BOOST_LOG_TRIVIAL(info) << "time spec: " << stream_cmd.time_spec.get_real_secs();
+            BOOST_LOG_TRIVIAL(info) << "Issuing stream command to start collecting samples";
             usrp->issue_stream_cmd(stream_cmd);
-            std::cout << "Command issued" << std::endl;
         }
         std::cout << "C" << std::endl;
         usrp->set_command_time(start_time + tx_ontime, 0);
@@ -265,7 +261,6 @@ void rx_worker(
     rxmd.error_code = uhd::rx_metadata_t::ERROR_CODE_NONE;
     size_t nrx_samples = rx_stream->recv(recv_ptr, samps_per_pulse, rxmd, timeout);
     if (rxmd.error_code != uhd::rx_metadata_t::ERROR_CODE_NONE) {
-        std::cerr << "Error!\t";
-        std::cerr << rxmd.error_code << std::endl;
+        BOOST_LOG_TRIVIAL(error) << rxmd.error_code;
     }
 }
