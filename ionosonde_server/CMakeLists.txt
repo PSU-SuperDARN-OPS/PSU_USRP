@@ -10,7 +10,9 @@ find_package(Boost "1.46" REQUIRED
         thread
         system
         signals
-        log)
+        log
+        log_setup)
+add_definitions(-DBOOST_LOG_DYN_LINK)
 
 find_package(UHD "3.9.7")
 

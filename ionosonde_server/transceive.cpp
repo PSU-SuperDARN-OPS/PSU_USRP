@@ -105,7 +105,7 @@ void transceive(
     boost::thread_group rx_threads;
     boost::thread_group tx_threads;
     for (int ipulse = 0; ipulse < npulses; ipulse++) {
-        BOOST_LOG_TRIVIAL(debug) << "pulse number: " << ipulse <<;
+        BOOST_LOG_TRIVIAL(trace) << "pulse number: " << ipulse;
         std::cout << "A" << std::endl;
         for (size_t ichan = 0; ichan < usrp->get_rx_num_channels(); ichan++) {
             rx_dptr[ichan] = ipulse * samps_per_pulse + outdata[ichan];
