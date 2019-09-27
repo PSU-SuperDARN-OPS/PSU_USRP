@@ -9,7 +9,8 @@ find_package(Boost "1.46" REQUIRED
         program_options
         thread
         system
-        signals)
+        signals
+        log)
 
 find_package(UHD "3.9.7")
 
