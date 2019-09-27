@@ -22,8 +22,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fftw3.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include <thread>
 #include "global_variables.h"
@@ -56,8 +56,8 @@ void transceive(
     std::vector<std::complex<int16_t> >* txbuff1,
     float tx_ontime,
     std::complex<int16_t>** outdata,
-    size_t samps_per_pulse
-){
+    size_t samps_per_pulse){
+
     int debug = 0;
     int fverb = 1;
 
@@ -106,12 +106,13 @@ void transceive(
     boost::thread_group tx_threads;
     for (int ipulse=0; ipulse<npulses; ipulse++){
         if (debug) std::cout << "pulse number: " << ipulse << std::endl;
+        std::cout << "A" << std::endl;
         for (size_t ichan=0; ichan<usrp->get_rx_num_channels(); ichan++){
          rx_dptr[ichan] = ipulse*samps_per_pulse + outdata[ichan];
         }
         
         float timeout = 4.1;
-        
+        std::cout << "B" << std::endl;
         usrp->set_command_time(start_time-50e-6,0);
         usrp->set_gpio_attr("RXA","OUT",T_BIT, 0x8100);
         
@@ -119,8 +120,9 @@ void transceive(
             if (fverb) std::cout << "time spec: " << stream_cmd.time_spec.get_real_secs() << std::endl;
             if (fverb) std::cout << "Issuing stream command to start collecting samples\n";
             usrp->issue_stream_cmd(stream_cmd);
+            std::cout << "Command issued" << std::endl;
         }
-        
+        std::cout << "C" << std::endl;
         usrp->set_command_time(start_time+tx_ontime,0);
         usrp->set_gpio_attr("RXA","OUT",R_BIT, 0x8100);
 
@@ -166,32 +168,38 @@ void transceive(
 	}                  
 
 */
+
+        std::cout << "D" << std::endl;
         size_t acc_samps=0;
         if (ipulse%2 == 0) {
             vec_ptr[0] = &txbuff0->front();
         }
+
         if (ipulse%2 == 1) {
             vec_ptr[0] = &txbuff1->front();
         }
-        
+
         if (ipulse != npulses-1) {
              tx_threads.create_thread(boost::bind(tx_worker,
                  txbuff0->size(), tx_stream, start_time, vec_ptr[0], 0));
         }
+
         if (ipulse == npulses-1) {
              tx_threads.create_thread(boost::bind(tx_worker,
                  txbuff0->size(), tx_stream, start_time, vec_ptr[0], 1));
         }
-        
+
         rx_threads.join_all();
         rx_threads.create_thread(boost::bind(rx_worker,
          rx_stream, samps_per_pulse, rx_dptr));
-        
+
+        /* //This Loop Does Nothing, WHY?
         for (int k=0; k<samps_per_pulse; k++){
          std::complex<int16_t>* temp_ptr;
          temp_ptr = outdata[0]+ipulse*samps_per_pulse+k;
          //if (fverb) outtr<<"samp "<<(k+1)<<": "<<*temp_ptr<<std::endl;
         }
+         */
 
         //for (int k=0; k<10; k++){
         // //std::cout << "raw data: " << outdata[0][i][k] << "\t" << outdata[1][i][k] << std::endl;
@@ -199,9 +207,9 @@ void transceive(
         //}
         //for (int k=0; k<samps_per_pulse; k++)
         //    outdata[i][k] += buff[k];
-        
-        
-        start_time += float(pulse_time);
+
+        std::cout << "E" << std::endl;
+        start_time += pulse_time;
     }
     tx_threads.join_all();
     rx_threads.join_all();

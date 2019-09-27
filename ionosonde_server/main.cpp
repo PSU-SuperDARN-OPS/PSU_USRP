@@ -202,7 +202,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     char usrpmsg;
 
     //create a usrp device
-    args = "addr=192.168.10.3";
+    args = "addr=192.168.10.2";
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make(args);
 
     //Lock device to the motherboard clock and 
