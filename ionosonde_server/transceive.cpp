@@ -51,7 +51,6 @@ void transceive(
         uhd::rx_streamer::sptr rx_stream,
         unsigned int npulses,
         float pulse_time,
-        //std::complex<int16_t>* txbuff,
         std::vector<std::complex<int16_t> > *txbuff0,
         std::vector<std::complex<int16_t> > *txbuff1,
         float tx_ontime,
@@ -62,8 +61,6 @@ void transceive(
 
     //create metadeta tags for transmit streams
     BOOST_LOG_TRIVIAL(info) << "time spec debug woah doggy";
-    //usrp->set_clock_source("internal");
-    //usrp->set_time_now(uhd::time_spec_t(0.0));
     BOOST_LOG_TRIVIAL(info) << "time spec debug woah doggy doggy";
     uhd::time_spec_t start_time = usrp->get_time_now() + 0.05;
     BOOST_LOG_TRIVIAL(info) << "time spec debug woah";
@@ -74,7 +71,6 @@ void transceive(
     md.time_spec = start_time;
     std::vector<std::complex<int16_t> *> vec_ptr;
     vec_ptr.resize(1);
-    //vec_ptr[0] = &txbuff->front();
 
     usrp->set_gpio_attr("RXA", "CTRL", 0x0, TRTRIG_BIT); //GPIO mode
     usrp->set_gpio_attr("RXA", "DDR", TRTRIG_BIT, TRTRIG_BIT); //Direction out
@@ -120,49 +116,6 @@ void transceive(
         usrp->set_command_time(start_time + tx_ontime, 0);
         usrp->set_gpio_attr("RXA", "OUT", R_BIT, 0x8100);
 
-// sig gen mimmic
-// 2r=ct, r=100e3, c=3e8, --> t=667e-6
-// off one default rect pulse later (34us)
-        //      usrp->set_command_time(start_time+1667e-6,0);
-        //      usrp->set_gpio_attr("RXA","OUT",TRIG_BIT,TRIG_BIT);
-        //      usrp->set_command_time(start_time+1701e-6,0);
-        //      usrp->set_gpio_attr("RXA","OUT",0x0,TRIG_BIT);
-
-/*Below is for testing with signal analyzer and varying by complentary pulse*/
-/*
-
-        uhd::time_spec_t temp_time;
-        float temp_length;
-
-        if (ipulse%2 == 0){
-            temp_time = start_time-50e-6+4000e-6;
-        	usrp->set_command_time(temp_time,0);
-            if (fverb) std::cout << "even pulse on: " << temp_time.get_real_secs() << std::endl;
-        	usrp->set_gpio_attr("RXA","OUT",TRIG_BIT,TRIG_BIT);
-            temp_length = -temp_time.get_real_secs();
-            temp_time = start_time-50e-6+4034e-6;
-            temp_length += temp_time.get_real_secs();
-        	usrp->set_command_time(temp_time,0);
-            if (fverb) std::cout << "even pulse off: " << temp_time.get_real_secs() << std::endl;
-        	usrp->set_gpio_attr("RXA","OUT",0x0,TRIG_BIT);
-            if (fverb) std::cout << "even pulse length was: " << temp_length << std::endl; 
-	}
-        if (ipulse%2 == 1){
-            temp_time = start_time-50e-6+4000e-6;
-        	usrp->set_command_time(temp_time,0);
-            if (fverb) std::cout << "odd pulse on: " << temp_time.get_real_secs() << std::endl;
-        	usrp->set_gpio_attr("RXA","OUT",TRIG_BIT,TRIG_BIT);
-            temp_length = -temp_time.get_real_secs();
-            temp_time = start_time-50e-6+4034e-6;
-            temp_length += temp_time.get_real_secs();
-        	usrp->set_command_time(temp_time,0);
-            if (fverb) std::cout << "odd pulse off: " << temp_time.get_real_secs() << std::endl;
-        	usrp->set_gpio_attr("RXA","OUT",0x0,TRIG_BIT);
-            if (fverb) std::cout << "odd pulse length was: " << temp_length << std::endl;
-	}                  
-
-*/
-
         std::cout << "D" << std::endl;
         // Segfault sometime after this
         size_t acc_samps = 0;
@@ -188,20 +141,6 @@ void transceive(
         rx_threads.create_thread(boost::bind(rx_worker,
                                              rx_stream, samps_per_pulse, rx_dptr));
 
-        /* //This Loop Does Nothing, WHY?
-        for (int k=0; k<samps_per_pulse; k++){
-         std::complex<int16_t>* temp_ptr;
-         temp_ptr = outdata[0]+ipulse*samps_per_pulse+k;
-         //if (fverb) outtr<<"samp "<<(k+1)<<": "<<*temp_ptr<<std::endl;
-        }
-         */
-
-        //for (int k=0; k<10; k++){
-        // //std::cout << "raw data: " << outdata[0][i][k] << "\t" << outdata[1][i][k] << std::endl;
-        // std::cout << "raw data: " << rx_dptr[0][k] << " " << rx_dptr[1][k] << std::endl;
-        //}
-        //for (int k=0; k<samps_per_pulse; k++)
-        //    outdata[i][k] += buff[k];
 
         std::cout << "E" << std::endl;
         start_time += pulse_time;
