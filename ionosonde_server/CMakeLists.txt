@@ -25,7 +25,8 @@ add_executable(ionosonde_server
         matched_filter.cpp
         transceive.cpp
         utils.cpp utils.hpp
-         sounder.hpp
+        sounder.hpp
+        transceive.cpp
         global_variables.h
         )
 target_include_directories(ionosonde_server PRIVATE
