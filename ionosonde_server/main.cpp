@@ -4,12 +4,12 @@
 // Adapted from example txrx_loopback_to_file.cpp
 // Alex Morris
 // 06 Dec 2013
-#include <sys/socket.h>
 #include <uhd/utils/thread_priority.hpp>
 #include <uhd/utils/safe_main.hpp>
 #include <uhd/utils/static.hpp>
 #include <uhd/usrp/multi_usrp.hpp>
 #include <uhd/exception.hpp>
+
 #include <boost/thread/thread.hpp>
 #include <boost/program_options.hpp>
 #include <boost/math/special_functions/round.hpp>
@@ -17,6 +17,11 @@
 #include <boost/format.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/expressions.hpp>
+
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -25,6 +30,7 @@
 #include <cmath>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/socket.h>
 #include <unistd.h>
 #include <fftw3.h>
 
@@ -36,6 +42,16 @@
 
 namespace po = boost::program_options;
 typedef std::complex <int16_t> sc16;
+
+namespace logging = boost::log;
+
+void init_logging()
+{
+    logging::core::get()->set_filter
+            (
+                    logging::trivial::severity >= logging::trivial::info
+            );
+}
 
 /***********************************************************************
  * Signal interrupt handlers
@@ -119,6 +135,10 @@ void set_frontend_parms(int freq, uhd::usrp::multi_usrp::sptr usrp) {
  * Main function
  **********************************************************************/
 int UHD_SAFE_MAIN(int argc, char *argv[]) {
+
+    init_logging();
+
+    BOOST_LOG_TRIVIAL(info) << "Starting Server";
 
     std::ofstream myfile;
     myfile.open("example.txt");

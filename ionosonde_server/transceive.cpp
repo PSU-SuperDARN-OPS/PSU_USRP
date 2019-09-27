@@ -31,8 +31,6 @@
 
 #include "global_variables.h"
 
-extern int verbose;
-
 void tx_worker(
         unsigned int bufflen,
         uhd::tx_streamer::sptr tx_stream,
@@ -59,9 +57,6 @@ void transceive(
         float tx_ontime,
         std::complex<int16_t> **outdata,
         size_t samps_per_pulse) {
-
-    int debug = 0;
-    int fverb = 1;
 
     BOOST_LOG_TRIVIAL(debug) << "samps_per_pulse: " << samps_per_pulse;
 
@@ -169,6 +164,7 @@ void transceive(
 */
 
         std::cout << "D" << std::endl;
+        // Segfault sometime after this
         size_t acc_samps = 0;
         if (ipulse % 2 == 0) {
             vec_ptr[0] = &txbuff0->front();
