@@ -23,7 +23,7 @@ set(CMAKE_CXX_STANDARD 14)
 add_executable(ionosonde_server
         main.cpp
         capture_spectrum.cpp
-        lp_filter.cpp
+        lp_filter.cpp lp_filter.hpp
         doppler_process.cpp
         matched_filter.cpp
         transceive.cpp

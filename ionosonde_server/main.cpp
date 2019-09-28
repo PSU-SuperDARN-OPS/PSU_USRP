@@ -35,6 +35,7 @@
 #include <fftw3.h>
 
 #include "sounder.hpp"
+#include "lp_filter.hpp"
 
 //#include "c_utils.h"
 #include "utils.hpp"
@@ -177,8 +178,8 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     boost::thread_group transmit_thread;
     std::vector <std::complex<float>> tx_raw_buff0;
     std::vector <std::complex<float>> tx_raw_buff1;
-    std::vector <std::complex<int16_t>> tx_filt_buff0;
-    std::vector <std::complex<int16_t>> tx_filt_buff1;
+    std::vector <std::complex<int16_t> > tx_filt_buff0;
+    std::vector <std::complex<int16_t> > tx_filt_buff1;
     std::vector <std::complex<float>> filter_taps;
     int ntaps;
     float txsamprate, txbw, tx_ontime;

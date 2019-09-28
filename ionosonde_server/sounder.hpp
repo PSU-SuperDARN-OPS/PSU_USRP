@@ -7,15 +7,7 @@ void capture_spectrum(
         float *periodogram
 );
 
-int lp_filter(
-        std::vector<std::complex <float> *> indata,
-        std::vector<std::complex < float> *> outdata,
-        int slowdim,
-        int fastdim,
-        float samprate,
-        float bw,
-        int decimrate
-);
+
 
 int matched_filter(
         std::complex<float> ***indata,

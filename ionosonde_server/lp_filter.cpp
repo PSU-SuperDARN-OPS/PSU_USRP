@@ -12,6 +12,8 @@
 #include <fftw3.h>
 #include <vector>
 
+#include "sounder.hpp"
+
 extern int verbose;
 //int verbose=2;
 
