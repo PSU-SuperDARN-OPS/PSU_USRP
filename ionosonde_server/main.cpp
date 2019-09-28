@@ -403,7 +403,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
                     //Prepare lp filter taps for filtering the tx samples
                     samps_per_sym = symboltime_usec * TX_RATE / 1e6;
                     ntaps = 4 * samps_per_sym;
-                    filter_taps.resize(ntaps, 0);
+                    filter_taps.resize(ntaps, 0L);
                     txbw = 1 / (2.e-6 * symboltime_usec);
                     txsamprate = usrp->get_tx_rate();
                     for (int i = 0; i < ntaps; i++) {
@@ -431,8 +431,8 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
                     bufflen = pcode0.size() * samps_per_sym;
                     tx_raw_buff0.clear();
                     tx_raw_buff1.clear();
-                    tx_raw_buff0.resize(bufflen + ntaps, 0);
-                    tx_raw_buff1.resize(bufflen + ntaps, 0);
+                    tx_raw_buff0.resize(bufflen + ntaps, 0L);
+                    tx_raw_buff1.resize(bufflen + ntaps, 0L);
                     for (size_t isym = 0; isym < pcode0.size(); isym++) {
                         tx_raw_buff0[isym * samps_per_sym + ntaps / 2 + samps_per_sym / 2] = std::complex<float>(
                                 pcode0[isym] * 15000, 0x0000);
@@ -581,10 +581,10 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
                         outvecs[0][1][i].clear();
                         outvecs[1][0][i].clear();
                         outvecs[1][1][i].clear();
-                        outvecs[0][0][i].resize(nsamps_per_pulse, 0);
-                        outvecs[0][1][i].resize(nsamps_per_pulse, 0);
-                        outvecs[1][0][i].resize(nsamps_per_pulse, 0);
-                        outvecs[1][1][i].resize(nsamps_per_pulse, 0);
+                        outvecs[0][0][i].resize(nsamps_per_pulse, 0L);
+                        outvecs[0][1][i].resize(nsamps_per_pulse, 0L);
+                        outvecs[1][0][i].resize(nsamps_per_pulse, 0L);
+                        outvecs[1][1][i].resize(nsamps_per_pulse, 0L);
                         outvec_ptrs[0][0][i] = &outvecs[0][0][i].front();
                         outvec_ptrs[0][1][i] = &outvecs[0][1][i].front();
                         outvec_ptrs[1][0][i] = &outvecs[1][0][i].front();
