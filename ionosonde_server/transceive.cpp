@@ -30,6 +30,7 @@
 #include <thread>
 
 #include "global_variables.h"
+#include "sounder.hpp"
 
 void tx_worker(
         unsigned int bufflen,
@@ -63,7 +64,7 @@ void transceive(
     BOOST_LOG_TRIVIAL(info) << "time spec debug woah doggy";
     BOOST_LOG_TRIVIAL(info) << "time spec debug woah doggy doggy";
     uhd::time_spec_t start_time = usrp->get_time_now() + 0.05;
-    BOOST_LOG_TRIVIAL(info) << "time spec debug woah";
+    BOOST_LOG_TRIVIAL(info) << "time start: " << start_time.get_full_secs() << start_time.get_frac_secs();
     uhd::tx_metadata_t md;
     md.start_of_burst = true;
     md.end_of_burst = false;
@@ -97,13 +98,13 @@ void transceive(
     boost::thread_group tx_threads;
     for (int ipulse = 0; ipulse < npulses; ipulse++) {
         BOOST_LOG_TRIVIAL(trace) << "pulse number: " << ipulse;
-        std::cout << "A" << std::endl;
+
         for (size_t ichan = 0; ichan < usrp->get_rx_num_channels(); ichan++) {
             rx_dptr[ichan] = ipulse * samps_per_pulse + outdata[ichan];
         }
 
         float timeout = 4.1;
-        std::cout << "B" << std::endl;
+
         usrp->set_command_time(start_time - 50e-6, 0);
         usrp->set_gpio_attr("RXA", "OUT", T_BIT, 0x8100);
 
@@ -112,11 +113,11 @@ void transceive(
             BOOST_LOG_TRIVIAL(info) << "Issuing stream command to start collecting samples";
             usrp->issue_stream_cmd(stream_cmd);
         }
-        std::cout << "C" << std::endl;
+
         usrp->set_command_time(start_time + tx_ontime, 0);
         usrp->set_gpio_attr("RXA", "OUT", R_BIT, 0x8100);
 
-        std::cout << "D" << std::endl;
+
         // Segfault sometime after this
         size_t acc_samps = 0;
         if (ipulse % 2 == 0) {
@@ -142,7 +143,6 @@ void transceive(
                                              rx_stream, samps_per_pulse, rx_dptr));
 
 
-        std::cout << "E" << std::endl;
         start_time += pulse_time;
     }
     tx_threads.join_all();
