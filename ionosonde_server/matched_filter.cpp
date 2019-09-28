@@ -12,6 +12,8 @@
 #include <fftw3.h>
 #include <vector>
 
+#include "sounder.hpp"
+
 /***********************************************************************
  * matched_filter function
  * Designed to work with complementary pulse codes

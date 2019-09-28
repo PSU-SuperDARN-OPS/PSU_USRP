@@ -25,7 +25,7 @@ add_executable(ionosonde_server
         capture_spectrum.cpp
         lp_filter.cpp lp_filter.hpp
         doppler_process.cpp
-        matched_filter.cpp
+        matched_filter.cpp matched_filter.hpp
         transceive.cpp
         utils.cpp utils.hpp
         sounder.hpp

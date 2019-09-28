@@ -36,6 +36,7 @@
 
 #include "sounder.hpp"
 #include "lp_filter.hpp"
+#include "matched_filter.hpp"
 
 //#include "c_utils.h"
 #include "utils.hpp"
