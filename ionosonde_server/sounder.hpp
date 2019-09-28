@@ -1,3 +1,6 @@
+
+#include <uhd/usrp/multi_usrp.hpp>
+
 void capture_spectrum(
         uhd::usrp::multi_usrp::sptr usrp,
         uhd::rx_streamer::sptr rx_stream,
@@ -7,17 +10,6 @@ void capture_spectrum(
         float *periodogram
 );
 
-
-
-int matched_filter(
-        std::complex<float> ***indata,
-        std::vector<std::complex <float> *> outdata,
-        float **pcode,
-        int pcode_length,
-        int slowdim,
-        int fastdim,
-        int osr
-);
 
 int doppler_process(
         std::complex<float> **indata,
