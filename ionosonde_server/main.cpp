@@ -250,13 +250,13 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
 
     uhd::rx_streamer::sptr rx_stream = usrp->get_rx_stream(rx_stream_args);
 
-    BOOST_LOG_TRIVIAL(info) << boost::format("Using Device: %s") % usrp->get_pp_string();
+    BOOST_LOG_TRIVIAL(info) << boost::format("Using Device: \n%s") % usrp->get_pp_string();
 
     //USRP is initialized;
     //now execute the tx/rx operations per arguments passed by the tcp socket
     sock = tcpsocket(HOST_PORT);
 
-    BOOST_LOG_TRIVIAL(info) << boost::format("socket: %i\n") % sock << std::endl;
+    BOOST_LOG_TRIVIAL(info) << boost::format("socket: %i") % sock;
 
     while (true) {
         listen(sock, 1);
@@ -265,7 +265,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
 
         msgsock = accept(sock, nullptr, nullptr);
 
-        BOOST_LOG_TRIVIAL(info) << boost::format("Listening on socket %i\n") % msgsock;
+        BOOST_LOG_TRIVIAL(info) << boost::format("Listening on socket %i") % msgsock;
 
         while (true) {
             rval = recv_data(msgsock, &usrpmsg, sizeof(usrpmsg));
@@ -278,11 +278,11 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
 
             switch (usrpmsg) {
                 case EXIT:
-                    BOOST_LOG_TRIVIAL(info) << boost::format("Client done");
+                    BOOST_LOG_TRIVIAL(info) << boost::format("Client Done");
                     break;
 
                 case LISTEN:
-                    BOOST_LOG_TRIVIAL(info) << boost::format("Starting Listening.");
+                    BOOST_LOG_TRIVIAL(info) << boost::format("Starting LISTEN Command");
                     if (verbose > -1) perfile << boost::format("Starting Listening.") << std::endl;
 
                     rval = recv_data(msgsock, &lparms, sizeof(lparms));
@@ -322,6 +322,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
                     send(msgsock, &periodogram.front(), periodogram.size() * sizeof(float), 0);
                     return_status = 0;
                     send(msgsock, &return_status, sizeof(return_status), 0);
+                    BOOST_LOG_TRIVIAL(info) << "Finished LISTEN Command";
                     break;
 
                 case SEND:
@@ -329,7 +330,8 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
                     // 170525 GLB trying to determine why needs server reset
                     //usrp->set_time_now(uhd::time_spec_t(0.0));
 
-                    BOOST_LOG_TRIVIAL(info) << "Starting sounding.";
+                    BOOST_LOG_TRIVIAL(info) << "Starting SEND Command";
+                    BOOST_LOG_TRIVIAL(info) << "Starting Sounding";
 
                     rval = recv_data(msgsock, &parms, sizeof(parms));
 
@@ -552,7 +554,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
                     break;
 
                 case PROCESS:
-                    BOOST_LOG_TRIVIAL(info) << "Starting Processing";
+                    BOOST_LOG_TRIVIAL(info) << "Starting PROCESS Command";
                     //dmrate = parms.symboltime_usec * parms.rxrate_khz / (osr*1000);
                     //dmrate = (size_t) (1.e-6*symboltime_usec * RX_RATE / osr);
                     bandwidth = 1 / (2.e-6 * symboltime_usec);
@@ -710,7 +712,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
                     break;
 
                 case GET_DATA:
-                    BOOST_LOG_TRIVIAL(info) << "Starting Get Data";
+                    BOOST_LOG_TRIVIAL(info) << "Starting GET_DATA Command";
                     nranges = fastdim - filter_delay;
 
                     send(msgsock, &nranges, sizeof(nranges), 0);
