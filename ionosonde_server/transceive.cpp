@@ -2,31 +2,19 @@
 // 
 #include <uhd/utils/thread_priority.hpp>
 #include <uhd/utils/safe_main.hpp>
-#include <uhd/utils/static.hpp>
 #include <uhd/usrp/multi_usrp.hpp>
-#include <uhd/exception.hpp>
 
 #include <boost/thread/thread.hpp>
 #include <boost/program_options.hpp>
 #include <boost/math/special_functions/round.hpp>
-#include <boost/foreach.hpp>
-#include <boost/format.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/log/expressions.hpp>
 
-#include <iostream>
-#include <string>
 #include <fstream>
-#include <complex>
 #include <csignal>
-#include <cmath>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <fftw3.h>
-#include <cstdio>
-#include <cstdlib>
 #include <thread>
 
 #include "global_variables.h"
@@ -120,20 +108,17 @@ void transceive(
 
         // Segfault sometime after this
         size_t acc_samps = 0;
+
         if (ipulse % 2 == 0) {
             vec_ptr[0] = &txbuff0->front();
-        }
-
-        if (ipulse % 2 == 1) {
+        } else  {
             vec_ptr[0] = &txbuff1->front();
         }
 
         if (ipulse != npulses - 1) {
             tx_threads.create_thread(boost::bind(tx_worker,
                                                  txbuff0->size(), tx_stream, start_time, vec_ptr[0], 0));
-        }
-
-        if (ipulse == npulses - 1) {
+        } else {
             tx_threads.create_thread(boost::bind(tx_worker,
                                                  txbuff0->size(), tx_stream, start_time, vec_ptr[0], 1));
         }
