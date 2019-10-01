@@ -37,3 +37,4 @@
 control_programs/swept_freq/ionogram*
 control_programs/swept_freq/main.o
 control_programs/swept_freq/swept_freq
+ionosonde_server/*.o
