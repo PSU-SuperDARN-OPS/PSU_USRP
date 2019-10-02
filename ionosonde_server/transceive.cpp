@@ -22,14 +22,14 @@
 
 void tx_worker(
         unsigned int bufflen,
-        uhd::tx_streamer::sptr tx_stream,
+        const uhd::tx_streamer::sptr & tx_stream,
         uhd::time_spec_t start_time,
         std::complex<int16_t> *vec_ptr,
         int end
 );
 
 void rx_worker(
-        uhd::rx_streamer::sptr rx_stream,
+        const uhd::rx_streamer::sptr & rx_stream,
         unsigned int samps_per_pulse,
         std::vector<std::complex<int16_t> *> &recv_ptr
 );
@@ -46,21 +46,18 @@ void transceive(
         std::complex<int16_t> **outdata,
         size_t samps_per_pulse) {
 
-    BOOST_LOG_TRIVIAL(debug) << "samps_per_pulse: " << samps_per_pulse;
+    BOOST_LOG_TRIVIAL(debug) << "Samples per pulse: " << samps_per_pulse;
 
-    //create metadeta tags for transmit streams
-    BOOST_LOG_TRIVIAL(info) << "time spec debug woah doggy";
-    BOOST_LOG_TRIVIAL(info) << "time spec debug woah doggy doggy";
     uhd::time_spec_t start_time = usrp->get_time_now() + 0.05;
-    BOOST_LOG_TRIVIAL(info) << "time start: " << start_time.get_full_secs() << start_time.get_frac_secs();
+    BOOST_LOG_TRIVIAL(info) << "Time start: " << start_time.get_full_secs() << start_time.get_frac_secs();
 
     usrp->set_gpio_attr("RXA", "CTRL", 0x0, TRTRIG_BIT); //GPIO mode
     usrp->set_gpio_attr("RXA", "DDR", TRTRIG_BIT, TRTRIG_BIT); //Direction out
 
 
     std::vector<std::complex<int16_t> > buff(samps_per_pulse, 0);
-    BOOST_LOG_TRIVIAL(info) << "rx buff size: " << buff.size();
-    BOOST_LOG_TRIVIAL(info) << "tx buff size: " << txbuff0->size();
+    BOOST_LOG_TRIVIAL(info) << "Receive buffer size:  " << buff.size();
+    BOOST_LOG_TRIVIAL(info) << "Transmit buffer size: " << txbuff0->size();
     uhd::stream_cmd_t stream_cmd = uhd::stream_cmd_t::STREAM_MODE_NUM_SAMPS_AND_DONE;
     stream_cmd.num_samps = npulses * samps_per_pulse;
     stream_cmd.stream_now = false;
@@ -131,11 +128,11 @@ void transceive(
  * but allow other actions to occur concurrently.
  **********************************************************************/
 void tx_worker(
-        unsigned int bufflen,
-        uhd::tx_streamer::sptr tx_stream,
-        uhd::time_spec_t start_time,
+        const unsigned int bufflen,
+        const uhd::tx_streamer::sptr & tx_stream,
+        const uhd::time_spec_t start_time,
         std::complex<int16_t> *vec_ptr,
-        int end
+        const int end
 ) {
     unsigned int acc_samps = 0;
 
@@ -161,8 +158,8 @@ void tx_worker(
 }
 
 void rx_worker(
-        uhd::rx_streamer::sptr rx_stream,
-        unsigned int samps_per_pulse,
+        const uhd::rx_streamer::sptr & rx_stream,
+        const unsigned int samps_per_pulse,
         std::vector<std::complex<int16_t> *> &recv_ptr
 ) {
     uhd::rx_metadata_t rxmd;
