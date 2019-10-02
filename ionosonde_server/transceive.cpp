@@ -53,19 +53,11 @@ void transceive(
     BOOST_LOG_TRIVIAL(info) << "time spec debug woah doggy doggy";
     uhd::time_spec_t start_time = usrp->get_time_now() + 0.05;
     BOOST_LOG_TRIVIAL(info) << "time start: " << start_time.get_full_secs() << start_time.get_frac_secs();
-    uhd::tx_metadata_t md;
-    md.start_of_burst = true;
-    md.end_of_burst = false;
-    md.has_time_spec = true;
-    md.time_spec = start_time;
-    std::vector<std::complex<int16_t> *> vec_ptr;
-    vec_ptr.resize(1);
 
     usrp->set_gpio_attr("RXA", "CTRL", 0x0, TRTRIG_BIT); //GPIO mode
     usrp->set_gpio_attr("RXA", "DDR", TRTRIG_BIT, TRTRIG_BIT); //Direction out
 
-    //create metadata tags for receive stream
-    uhd::rx_metadata_t rxmd;
+
     std::vector<std::complex<int16_t> > buff(samps_per_pulse, 0);
     BOOST_LOG_TRIVIAL(info) << "rx buff size: " << buff.size();
     BOOST_LOG_TRIVIAL(info) << "tx buff size: " << txbuff0->size();
@@ -76,12 +68,11 @@ void transceive(
             start_time + 22 / usrp->get_rx_rate(); //Digital hardware delay is 22 samples long.  Found by experiment.
 
     //loop for every pulse in the sequence
-    size_t spb;
     std::vector<std::complex<int16_t> *> rx_dptr;
     rx_dptr.resize(usrp->get_rx_num_channels());
-    spb = tx_stream->get_max_num_samps();
     BOOST_LOG_TRIVIAL(info) << "npulses: " << npulses;
     BOOST_LOG_TRIVIAL(info) << "pulse_time: " << pulse_time;
+
     boost::thread_group rx_threads;
     boost::thread_group tx_threads;
     for (int ipulse = 0; ipulse < npulses; ipulse++) {
@@ -90,8 +81,6 @@ void transceive(
         for (size_t ichan = 0; ichan < usrp->get_rx_num_channels(); ichan++) {
             rx_dptr[ichan] = ipulse * samps_per_pulse + outdata[ichan];
         }
-
-        float timeout = 4.1;
 
         usrp->set_command_time(start_time - 50e-6, 0);
         usrp->set_gpio_attr("RXA", "OUT", T_BIT, 0x8100);
@@ -107,7 +96,8 @@ void transceive(
 
 
         // Segfault sometime after this
-        size_t acc_samps = 0;
+        std::vector<std::complex<int16_t> *> vec_ptr;
+        vec_ptr.resize(1);
 
         if (ipulse % 2 == 0) {
             vec_ptr[0] = &txbuff0->front();
@@ -161,7 +151,6 @@ void tx_worker(
         size_t nsamples = tx_stream->send(vec_ptr, spb, md);
         vec_ptr += spb;
         acc_samps += nsamples;
-        //std::cout << acc_samps <<std::endl;
         md.start_of_burst = false;
         md.has_time_spec = false;
     }
