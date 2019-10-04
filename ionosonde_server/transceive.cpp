@@ -154,7 +154,7 @@ void tx_worker(
         acc_samps += nsamples;
         md.start_of_burst = false;
         md.has_time_spec = false;
-        BOOST_LOG_TRIVIAL(trace) << "Sent " << acc_samps << " tx packets";
+        //BOOST_LOG_TRIVIAL(trace) << "Sent " << acc_samps << " tx packets";
     }
     // Now on the last packet
     if (end) md.end_of_burst = true;
@@ -173,6 +173,7 @@ void rx_worker(
     float timeout = 4.1;
     rxmd.error_code = uhd::rx_metadata_t::ERROR_CODE_NONE;
     size_t nrx_samples = rx_stream->recv(recv_ptr, samps_per_pulse, rxmd, timeout);
+    BOOST_LOG_TRIVIAL(trace) << "Received " << nrx_samples << " packets";
     if (rxmd.error_code != uhd::rx_metadata_t::ERROR_CODE_NONE) {
         BOOST_LOG_TRIVIAL(error) << rxmd.error_code;
     }
