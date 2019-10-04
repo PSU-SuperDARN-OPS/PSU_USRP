@@ -2,10 +2,11 @@ cmake_minimum_required(VERSION 3.5.1...3.14)
 project(ionosonde_server VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined -g")
 
 find_package(FFTW)
 
-find_package(Boost "1.46" REQUIRED
+find_package(Boost  "1.46" REQUIRED
         program_options
         thread
         system
@@ -16,9 +17,7 @@ add_definitions(-DBOOST_LOG_DYN_LINK)
 
 find_package(UHD "3.9.7")
 
-
 set(CMAKE_CXX_STANDARD 14)
-
 
 add_executable(ionosonde_server
         main.cpp
@@ -36,10 +35,11 @@ target_include_directories(ionosonde_server PRIVATE
         ${Boost_INCLUDE_DIRS}
         ${UHD_INCLUDE_DIRS})
 
-target_link_directories(ionosonde_server PRIVATE
-        ${Boost_LIBRARY_DIRS})
+#target_link_directories(ionosonde_server PRIVATE
+#        ${Boost_LIBRARY_DIRS})
 
 target_link_libraries(ionosonde_server
         fftw3 m
+        pthread
         ${Boost_LIBRARIES}
         ${UHD_LIBRARIES})
