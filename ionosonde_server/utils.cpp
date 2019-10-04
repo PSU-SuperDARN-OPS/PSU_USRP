@@ -157,7 +157,7 @@ int send_data(int fd,void *buf,size_t buflen)
             return -1;
           }
 
-          buf += cc;
+          //buf += cc; // I have no idea why this is here
           total += cc;
           buflen -= cc;
      }
@@ -175,7 +175,7 @@ int recv_data(int fd,void *buf,size_t buflen)
           if (cc == 0) {
             return -1;
           }
-          buf += cc;
+          //buf += cc;  // I have no idea why this is here
           total += cc;
           buflen -= cc;
      }
