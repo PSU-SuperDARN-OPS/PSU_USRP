@@ -51,7 +51,7 @@ void init_logging()
 {
     logging::core::get()->set_filter
             (
-                    logging::trivial::severity >= logging::trivial::info
+                    logging::trivial::severity >= logging::trivial::trace
             );
 }
 

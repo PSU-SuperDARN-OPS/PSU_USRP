@@ -46,6 +46,7 @@ void transceive(
         std::complex<int16_t> **outdata,
         size_t samps_per_pulse) {
 
+    BOOST_LOG_TRIVIAL(trace) << "Entered function transceive";
     BOOST_LOG_TRIVIAL(debug) << "Samples per pulse: " << samps_per_pulse;
 
     uhd::time_spec_t start_time = usrp->get_time_now() + 0.05;
@@ -134,6 +135,7 @@ void tx_worker(
         std::complex<int16_t> *vec_ptr,
         const int end
 ) {
+    BOOST_LOG_TRIVIAL(trace) << "Entered function tx_worker";
     unsigned int acc_samps = 0;
 
     uhd::tx_metadata_t md;
@@ -162,6 +164,7 @@ void rx_worker(
         const unsigned int samps_per_pulse,
         std::vector<std::complex<int16_t> *> &recv_ptr
 ) {
+    BOOST_LOG_TRIVIAL(trace) << "Entered function rx_worker";
     uhd::rx_metadata_t rxmd;
     float timeout = 4.1;
     rxmd.error_code = uhd::rx_metadata_t::ERROR_CODE_NONE;
