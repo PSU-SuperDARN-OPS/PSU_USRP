@@ -146,17 +146,21 @@ void tx_worker(
     size_t spb = tx_stream->get_max_num_samps();
     if (spb > bufflen) spb = bufflen;
 
+
+
     while (acc_samps < bufflen - spb) {
         size_t nsamples = tx_stream->send(vec_ptr, spb, md);
         vec_ptr += spb;
         acc_samps += nsamples;
         md.start_of_burst = false;
         md.has_time_spec = false;
+        BOOST_LOG_TRIVIAL(trace) << "Sent " << acc_samps << " tx packets";
     }
     // Now on the last packet
     if (end) md.end_of_burst = true;
     spb = bufflen - acc_samps;
     size_t nsamples = tx_stream->send(vec_ptr, spb, md);
+    BOOST_LOG_TRIVIAL(trace) << "Sent last tx packet";
 }
 
 void rx_worker(
