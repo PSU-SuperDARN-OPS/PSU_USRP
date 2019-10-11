@@ -3,6 +3,7 @@
 #include <uhd/utils/thread_priority.hpp>
 #include <uhd/utils/safe_main.hpp>
 #include <uhd/usrp/multi_usrp.hpp>
+#include <uhd/stream.hpp>
 
 #include <boost/thread/thread.hpp>
 #include <boost/program_options.hpp>
@@ -16,6 +17,7 @@
 #include <fstream>
 #include <csignal>
 #include <thread>
+#include <mutex>
 
 #include "global_variables.h"
 #include "sounder.hpp"
@@ -128,6 +130,8 @@ void transceive(
  * tx values into the USRP buffer as USRP buffer space is available,
  * but allow other actions to occur concurrently.
  **********************************************************************/
+ // TODO: make send call blocking
+ std::mutex tx_send_mutex;
 void tx_worker(
         const unsigned int bufflen,
         const uhd::tx_streamer::sptr & tx_stream,
@@ -147,7 +151,7 @@ void tx_worker(
     if (spb > bufflen) spb = bufflen;
 
 
-
+    std::lock_guard<std::mutex> lock(tx_send_mutex);
     while (acc_samps < bufflen - spb) {
         size_t nsamples = tx_stream->send(vec_ptr, spb, md);
         vec_ptr += spb;
